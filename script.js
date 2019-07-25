@@ -46,7 +46,6 @@ phina.define("Tapioka", {
     this.y=0;
     this.width=64;
     this.height=64;
-    var nowvec=Vector2().addChildTo(this);
   },
 
   update: function(app) {
