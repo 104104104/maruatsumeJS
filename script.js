@@ -4,6 +4,48 @@
 
 phina.globalize();
 
+//============================================
+// タイトルシーン
+//============================================
+phina.define('MyTitleScene', {
+  superClass: 'DisplayScene',
+  
+  init: function() {
+    this.superInit();
+    
+    var label = Label('MyTitleScene').addChildTo(this);
+    label.x = this.gridX.center();
+    label.y = this.gridY.center();
+  },
+  onclick:function(){
+    //次のシーンへ移動
+    this.exit();
+  }
+});
+//============================================
+// マネージャーシーン
+//============================================
+phina.define('MyManagerScene' , {
+  superClass: 'ManagerScene' ,
+  init: function() {
+    this.superInit({
+      scenes: [
+        // タイトル
+        {
+          label: 'マイタイトル',
+          className: 'MyTitleScene',
+          nextLabel: 'メインシーン' 
+        },
+        {
+          label: 'メインシーン',
+          className: 'MainScene',
+          nextLabel: 'マイタイトル' 
+        }
+      ]
+    });
+  }
+});
+
 var MOUSE_CIRCLE_RADIUS = 16;
 var TAPIOKA_MAX_NUM = 100;
 
@@ -103,11 +145,14 @@ phina.define('MainScene', {
   },
 });
 
+
 phina.main(function() {
   var app = GameApp({
-    startLabel: 'main',
     assets: ASSETS,
   });
-
+  //=========================================
+  //作成したManagerSceneを使うにはこれが必要
+  app.replaceScene(MyManagerScene());
+  //=========================================
   app.run();
 });
