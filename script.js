@@ -133,7 +133,7 @@ phina.define("MainScene", {
     this.objcnttxt.text = "猫とタピオカ  : " + this.objcnt;
     
     //レベルの定義
-    this.nekoTapiRevel = this.objcnt%1000;
+    this.nekoTapiRevel = this.objcnt;
     console.log(this.nekoTapiRevel);
     
     //一定間隔でタピオカ追加
