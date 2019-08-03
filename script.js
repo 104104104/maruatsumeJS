@@ -70,9 +70,15 @@ phina.define("MainScene", {
     this.superInit(options);
 
     this.score=0;
-    console.log(this.score);
-
     this.scoretxt = Label({
+      text: '',
+      fontSize: 48,
+      x: this.gridX.center(),
+      y: this.gridY.center()-50,
+    }).addChildTo(this);
+
+    this.time=0;
+    this.timetxt = Label({
       text: '',
       fontSize: 48,
       x: this.gridX.center(),
@@ -83,6 +89,8 @@ phina.define("MainScene", {
     this.tapigroup = DisplayElement().addChildTo(this);
     Tapioka().addChildTo(this.tapigroup);
   },
+
+
 
   update: function (app) {
 
@@ -107,8 +115,10 @@ phina.define("MainScene", {
 
     //タピオカ同士の当たり判定
     
-    //スコア表示
+    //スコアと時間表示
     this.scoretxt.text = "Score : " + this.score;
+    this.time+=app.deltaTime;
+    this.timetxt.text = "Time  : " + Math.floor(this.time/100)/10;
     
     //一定間隔でタピオカ追加
     if (app.frame % 3 == 0) {
@@ -173,10 +183,16 @@ phina.define("Tapioka", {
     }
     this.width = 64;
     this.height = 64;
+    //rotateで回転方向を決める
+    this.rotate = Math.round(Math.random() * 2);
   },
 
   update: function (app) {
-    this.rotation+=10;
+    if(this.rotate==0){
+      this.rotation+=10;
+    }else{
+      this.rotation-=10;
+    }
     var p = app.pointer;
     if (this.x >= p.x) {
       this.x -= 10;
