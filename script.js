@@ -176,6 +176,7 @@ phina.define("Tapioka", {
   },
 
   update: function (app) {
+    this.rotation+=10;
     var p = app.pointer;
     if (this.x >= p.x) {
       this.x -= 10;
