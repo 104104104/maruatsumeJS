@@ -89,8 +89,8 @@ phina.define("MainScene", {
     this.objcnttxt = Label({
       text: '',
       fontSize: 48,
-      x: this.gridX.center()+50,
-      y: this.gridY.center(),
+      x: this.gridX.center(),
+      y: this.gridY.center()+50,
     }).addChildTo(this);
 
     this.mouse = Mouse().addChildTo(this);
@@ -125,8 +125,9 @@ phina.define("MainScene", {
     this.scoretxt.text = "Score : " + this.score;
     this.time+=app.deltaTime;
     this.timetxt.text = "Time  : " + Math.floor(this.time/1000);
-    //this.objcnt=this.tapigroup.children.length;
-    //console.log(this.objcnt);
+    this.objcnt=this.tapigroup.children.length;
+    this.objcnttxt.text = "猫とタピオカ  : " + this.objcnt;
+    console.log(this.objcnt);
     
     //一定間隔でタピオカ追加
     if (app.frame % 3 == 0) {
