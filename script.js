@@ -93,6 +93,8 @@ phina.define("MainScene", {
       y: this.gridY.center()+50,
     }).addChildTo(this);
 
+    this.nekoTapiRevel=1;
+
     this.mouse = Mouse().addChildTo(this);
     this.tapigroup = DisplayElement().addChildTo(this);
     Tapioka().addChildTo(this.tapigroup);
@@ -107,32 +109,39 @@ phina.define("MainScene", {
     mouy=this.mouse.y;
     moupm=Math.floor(MOUSE_CIRCLE_RADIUS/2)+5; //マウスの当たり判定+-いくつまでにするか
     tempscore=0;
+    tempobjcnt=this.objcnt;
     this.tapigroup.children.each(function(elm){
       if( (moux-moupm<=elm.x && elm.x<=moux+moupm) && (mouy-moupm<=elm.y && elm.y<=mouy+moupm) ){
         elm.remove();
         tempscore+=1;
       }
     });
+
     //最後の3秒は、ボーナスタイム
     if(this.time<=27000){
-      this.score+=tempscore;
+      this.score+=tempscore*tempobjcnt;
     }else{
       tempscore+=1;//掛け算で0をかけちゃうのを防ぐ
-      this.score+=this.score*tempscore;
+      this.score+=this.score*tempscore*tempobjcnt;
     }
     
-    //スコアと時間表示とオブジェクトの数
+    //スコアと時間とオブジェクトの数表示
     this.scoretxt.text = "Score : " + this.score;
     this.time+=app.deltaTime;
     this.timetxt.text = "Time  : " + Math.floor(this.time/1000);
     this.objcnt=this.tapigroup.children.length;
     this.objcnttxt.text = "猫とタピオカ  : " + this.objcnt;
-    console.log(this.objcnt);
+    
+    //レベルの定義
+    this.nekoTapiRevel = this.objcnt%100;
+    console.log(this.nekoTapiRevel);
     
     //一定間隔でタピオカ追加
+    //画面内部の猫とタピオカの数に応じて、追加の割合が上がる(同時に複数個投入される)
     if (app.frame % 3 == 0) {
-      Tapioka().addChildTo(this.tapigroup);
-      //console.log(this.tapigroup);
+      for(var i=0; i<this.nekoTapiRevel; i++){
+        Tapioka().addChildTo(this.tapigroup);
+      }
     }
 
     //終了条件
