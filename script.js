@@ -67,15 +67,49 @@ phina.define("MainScene", {
     });
     this.superInit(options);
 
-    var mouse = Mouse().addChildTo(this);
+    this.score=0;
+
+    this.scoretxt = Label({
+      text: '',
+      fontSize: 48,
+      x: this.gridX.center(),
+      y: this.gridY.center(),
+    }).addChildTo(this);
+
+    this.mouse = Mouse().addChildTo(this);
     this.tapigroup = DisplayElement().addChildTo(this);
     Tapioka().addChildTo(this.tapigroup);
   },
 
   update: function (app) {
-    if (app.frame % 15 == 0) {
+
+    //タピオカとマウスの当たり判定
+    //console.log(this.mouse.x);
+
+
+    //foreachの中から、親のクラスが参照できないので、いったんマウス座標を格納
+    moux=this.mouse.x;
+    mouy=this.mouse.y;
+    moupm=Math.floor(MOUSE_CIRCLE_RADIUS/2)+5; //マウスの当たり判定+-いくつまでにするか
+    tempscore=this.score
+    this.tapigroup.children.each(function(elm){
+      if( (moux-moupm<=elm.x && elm.x<=moux+moupm) && (mouy-moupm<=elm.y && elm.y<=mouy+moupm) ){
+        elm.remove();
+        tempscore+=1;
+      }
+      this.score+=tempscore;
+      console.log(this.score);
+    });
+
+    //タピオカ同士の当たり判定
+    
+    //スコア表示
+    this.scoretxt.text = "Score : " + this.score;
+    
+    //一定間隔でタピオカ追加
+    if (app.frame % 5 == 0) {
       Tapioka().addChildTo(this.tapigroup);
-      console.log(this.tapigroup);
+      //console.log(this.tapigroup);
     }
   },
 
@@ -110,23 +144,18 @@ phina.define("Tapioka", {
     this.superInit('tapioka');
     //初期位置は、4つの画面のはじのどこか rand4で場所を決める
     var rand4 = Math.round(Math.random() * 4);
-    console.log(rand4);
     if (rand4 == 0) {
       this.x = Math.round(Math.random() * WIDTH);
       this.y = 0;
-      //console.log(00);
     } else if (rand4 == 1) {
       this.x = 0;
       this.y = Math.round(Math.random() * HEIGHT);
-      //console.log(11);
     } else if (rand4 == 2) {
       this.x = Math.round(Math.random() * WIDTH);
       this.y = HEIGHT;
-      //console.log(22);
     } else {
       this.x = WIDTH;
       this.y = Math.round(Math.random() * HEIGHT);
-      //console.log(33);
     }
     this.width = 64;
     this.height = 64;
@@ -135,14 +164,14 @@ phina.define("Tapioka", {
   update: function (app) {
     var p = app.pointer;
     if (this.x >= p.x) {
-      this.x -= Math.floor(Math.random() * (1 + 1 - 1)) + 10;
+      this.x -= 10;
     } else {
-      this.x += Math.floor(Math.random() * (1 + 1 - 1)) + 10;
+      this.x += 10;
     }
     if (this.y >= p.y) {
-      this.y -= Math.floor(Math.random() * (1 + 1 - 1)) + 10;
+      this.y -= 10;
     } else {
-      this.y += Math.floor(Math.random() * (1 + 1 - 1)) + 10;
+      this.y += 10;
     }
   },
 });
