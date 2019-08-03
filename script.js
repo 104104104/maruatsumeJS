@@ -1,30 +1,21 @@
-/*
- * runstant
- */
-
+//phina.jsで作る避けゲーム
 phina.globalize();
 
-//============================================
-// タイトルシーン
-//============================================
-phina.define('MyTitleScene', {
-  superClass: 'DisplayScene',
-
-  init: function () {
-    this.superInit();
-
-    var label = Label('MyTitleScene').addChildTo(this);
-    label.x = this.gridX.center();
-    label.y = this.gridY.center();
+//グローバル変数
+var ASSETS = {
+  image: {
+    'tapioka0': './tapioka0.png',
+    'tapioka1': './tapioka1.png',
+    'tapioka2': './tapioka2.png',
   },
-  onclick: function () {
-    //次のシーンへ移動
-    this.exit();
-  }
-});
-//============================================
-// マネージャーシーン
-//============================================
+};
+var TAPIOKA_MAX_NUM = 100;
+var MOUSE_CIRCLE_RADIUS = 16;
+//画面サイズ
+var WIDTH = 918;
+var HEIGHT = 1378;
+
+//シーンマネージャー
 phina.define('MyManagerScene', {
   superClass: 'ManagerScene',
   init: function () {
@@ -46,29 +37,99 @@ phina.define('MyManagerScene', {
   }
 });
 
+//タイトルシーン
+phina.define('MyTitleScene', {
+  superClass: 'DisplayScene',
 
-//以下、ゲームのメインシーンに関わる記述
-var MOUSE_CIRCLE_RADIUS = 16;
-var TAPIOKA_MAX_NUM = 100;
+  init: function (options) {
+    options = ({
+      width: WIDTH,
+      height: HEIGHT,
+    });
+    this.superInit(options);
 
-var ASSETS = {
-  image: {
-    'tapioka': './tapioka.png',
+    var label = Label('MyTitleScene').addChildTo(this);
+    label.x = this.gridX.center();
+    label.y = this.gridY.center();
   },
-};
+  onclick: function () {
+    //次のシーンへ移動
+    this.exit();
+  }
+});
 
-// マウスの定義
+//メインシーン
+phina.define("MainScene", {
+  superClass: 'DisplayScene',
+
+  init: function (options) {
+    options = ({
+      width: WIDTH,
+      height: HEIGHT,
+    });
+    this.superInit(options);
+
+    this.score=0;
+    console.log(this.score);
+
+    this.scoretxt = Label({
+      text: '',
+      fontSize: 48,
+      x: this.gridX.center(),
+      y: this.gridY.center(),
+    }).addChildTo(this);
+
+    this.mouse = Mouse().addChildTo(this);
+    this.tapigroup = DisplayElement().addChildTo(this);
+    Tapioka().addChildTo(this.tapigroup);
+  },
+
+  update: function (app) {
+
+    //タピオカとマウスの当たり判定
+    //console.log(this.mouse.x);
+
+
+    //foreachの中から、親のクラスが参照できないので、いったんマウス座標を格納
+    moux=this.mouse.x;
+    mouy=this.mouse.y;
+    moupm=Math.floor(MOUSE_CIRCLE_RADIUS/2)+5; //マウスの当たり判定+-いくつまでにするか
+    tempscore=0;
+    console.log(this.score , tempscore);
+    this.tapigroup.children.each(function(elm){
+      if( (moux-moupm<=elm.x && elm.x<=moux+moupm) && (mouy-moupm<=elm.y && elm.y<=mouy+moupm) ){
+        elm.remove();
+        tempscore+=1;
+      }
+    });
+    console.log(this.score , tempscore);
+    this.score+=tempscore;
+
+    //タピオカ同士の当たり判定
+    
+    //スコア表示
+    this.scoretxt.text = "Score : " + this.score;
+    
+    //一定間隔でタピオカ追加
+    if (app.frame % 3 == 0) {
+      Tapioka().addChildTo(this.tapigroup);
+      //console.log(this.tapigroup);
+    }
+  },
+
+});
+
+//マウスの定義
 phina.define("Mouse", {
   superClass: 'CircleShape',
 
   init: function (options) {
-    options = (options || {}).$safe({
+    options = ({
       fill: "red",
       stroke: null,
       radius: MOUSE_CIRCLE_RADIUS,
     });
     this.superInit(options);
-
     this.blendMode = 'lighter';
   },
 
@@ -78,125 +139,66 @@ phina.define("Mouse", {
     this.y = p.y;
   },
 });
-// マウスの定義　終わり
 
-// タピオカの定義
+//タピオカの定義
 phina.define("Tapioka", {
   superClass: "Sprite",
 
-  init: function (params) {
-    params = (params || {}).$safe({
-      x: 0,
-      y: 0,
-    });
-    this.width=64;
-    this.height=64;
-    this.superInit(params);
+  init: function () {
+    //randpicで画像をランダムに決める
+    var picstr="";
+    var randpic=Math.round(Math.random() * 3);
+    if(randpic==0){
+      picstr="tapioka0";
+    }else if(randpic==1){
+      picstr="tapioka1";
+    }else{
+      picstr="tapioka2";
+    }
+    this.superInit(picstr);
+    //初期位置は、4つの画面のはじのどこか rand4で場所を決める
+    var rand4 = Math.round(Math.random() * 4);
+    if (rand4 == 0) {
+      this.x = Math.round(Math.random() * WIDTH);
+      this.y = 0;
+    } else if (rand4 == 1) {
+      this.x = 0;
+      this.y = Math.round(Math.random() * HEIGHT);
+    } else if (rand4 == 2) {
+      this.x = Math.round(Math.random() * WIDTH);
+      this.y = HEIGHT;
+    } else {
+      this.x = WIDTH;
+      this.y = Math.round(Math.random() * HEIGHT);
+    }
+    this.width = 64;
+    this.height = 64;
   },
 
   update: function (app) {
     var p = app.pointer;
     if (this.x >= p.x) {
-      this.x -= Math.floor(Math.random() * (1 + 1 - 1)) + 10;
+      this.x -= 10;
     } else {
-      this.x += Math.floor(Math.random() * (1 + 1 - 1)) + 10;
+      this.x += 10;
     }
     if (this.y >= p.y) {
-      this.y -= Math.floor(Math.random() * (1 + 1 - 1)) + 10;
+      this.y -= 10;
     } else {
-      this.y += Math.floor(Math.random() * (1 + 1 - 1)) + 10;
+      this.y += 10;
     }
   },
 });
-//タピオカの定義終わり
 
-//タピオカズの定義
-phina.define("Group", {
-  superClass: 'DisplayElement',
-
-  init: function () {
-    this.superInit('group');
-  },
-
-  check: function () {
-    console.log('aaaaa');
-    console.log(typeof this.children);
-    var temparray=[];
-    this.children.each(function(elm){
-      temparray.push([elm.x, elm.y]);
-    });
-    for(i=0; i<temparray.length; i++){
-      this.children.eraseIf(function(elm){
-        if(elm.x==temparray[i][0] && elm.y==temparray[i][1]){
-          console.log('zasxdcfvgbhnjmk,l.;');
-          return true;
-        }
-      });
-    };
-    this.children.each(function(elm){
-      for(i of temparray){
-        if(elm.x==i[0] && elm.y==i[1]){
-          console.log('qawsedrftgyhujikolp;');
-          console.log(typeof(elm));
-        }
-      }
-    });
-    console.log(temparray);
-  },
-
-});
-//タピオカズの定義終わり
-
-phina.define('MainScene', {
-  superClass: 'DisplayScene',
-
-  init: function () {
-    this.superInit();
-
-    this.backgroundColor = '#999';
-
-    var mouse = Mouse().addChildTo(this);
-    mouse.x = this.gridX.center();
-    mouse.y = this.gridY.center();
-
-
-    var label = Label({
-      text: '',
-      fontSize: 48,
-      x: this.gridX.center(),
-      y: this.gridY.center(),
-    }).addChildTo(this);
-
-    // グループを生成
-    //this.tapiokas = DisplayElement().addChildTo(this);
-    this.tapigroup = Group().addChildTo(this);
-
-    //var tapioka = Tapioka().addChildTo(this.tapiokas);
-    this.tapigroup.check();
-
-
-    // 更新処理
-    this.update = function (app) {
-      // 経過秒数表示
-      label.text = '経過秒数：' + app.frame + " " + app.frame % 50;
-      if (app.frame % 50 == 0) {
-        //var tapioka = Tapioka().addChildTo(this.tapiokas);
-        var tapioka = Tapioka(Math.round( Math.random()*this.gridX )).addChildTo(this.tapigroup);
-        this.tapigroup.check();
-      }
-    };
-
-  },
-});
-
-
+//メイン処理
 phina.main(function () {
   var app = GameApp({
     assets: ASSETS,
+    width: WIDTH,
+    height: HEIGHT,
+    fps: 30,
   });
-  //=========================================
-  //作成したManagerSceneを使うにはこれが必要
+  //ManegerSceneを使う設定
   app.replaceScene(MyManagerScene());
-  //=========================================
   app.run();
 });
