@@ -4,7 +4,9 @@ phina.globalize();
 //グローバル変数
 var ASSETS = {
   image: {
-    'tapioka': './tapioka.png',
+    'tapioka0': './tapioka0.png',
+    'tapioka1': './tapioka1.png',
+    'tapioka2': './tapioka2.png',
   },
 };
 var TAPIOKA_MAX_NUM = 100;
@@ -92,7 +94,7 @@ phina.define("MainScene", {
     moux=this.mouse.x;
     mouy=this.mouse.y;
     moupm=Math.floor(MOUSE_CIRCLE_RADIUS/2)+5; //マウスの当たり判定+-いくつまでにするか
-    tempscore=this.score;
+    tempscore=0;
     console.log(this.score , tempscore);
     this.tapigroup.children.each(function(elm){
       if( (moux-moupm<=elm.x && elm.x<=moux+moupm) && (mouy-moupm<=elm.y && elm.y<=mouy+moupm) ){
@@ -100,6 +102,7 @@ phina.define("MainScene", {
         tempscore+=1;
       }
     });
+    console.log(this.score , tempscore);
     this.score+=tempscore;
 
     //タピオカ同士の当たり判定
@@ -108,7 +111,7 @@ phina.define("MainScene", {
     this.scoretxt.text = "Score : " + this.score;
     
     //一定間隔でタピオカ追加
-    if (app.frame % 5 == 0) {
+    if (app.frame % 3 == 0) {
       Tapioka().addChildTo(this.tapigroup);
       //console.log(this.tapigroup);
     }
@@ -142,7 +145,17 @@ phina.define("Tapioka", {
   superClass: "Sprite",
 
   init: function () {
-    this.superInit('tapioka');
+    //randpicで画像をランダムに決める
+    var picstr="";
+    var randpic=Math.round(Math.random() * 3);
+    if(randpic==0){
+      picstr="tapioka0";
+    }else if(randpic==1){
+      picstr="tapioka1";
+    }else{
+      picstr="tapioka2";
+    }
+    this.superInit(picstr);
     //初期位置は、4つの画面のはじのどこか rand4で場所を決める
     var rand4 = Math.round(Math.random() * 4);
     if (rand4 == 0) {
