@@ -85,6 +85,14 @@ phina.define("MainScene", {
       y: this.gridY.center(),
     }).addChildTo(this);
 
+    this.objcnt=1;
+    this.objcnttxt = Label({
+      text: '',
+      fontSize: 48,
+      x: this.gridX.center()+50,
+      y: this.gridY.center(),
+    }).addChildTo(this);
+
     this.mouse = Mouse().addChildTo(this);
     this.tapigroup = DisplayElement().addChildTo(this);
     Tapioka().addChildTo(this.tapigroup);
@@ -93,37 +101,43 @@ phina.define("MainScene", {
 
 
   update: function (app) {
-
     //タピオカとマウスの当たり判定
-    //console.log(this.mouse.x);
-
-
     //foreachの中から、親のクラスが参照できないので、いったんマウス座標を格納
     moux=this.mouse.x;
     mouy=this.mouse.y;
     moupm=Math.floor(MOUSE_CIRCLE_RADIUS/2)+5; //マウスの当たり判定+-いくつまでにするか
     tempscore=0;
-    console.log(this.score , tempscore);
     this.tapigroup.children.each(function(elm){
       if( (moux-moupm<=elm.x && elm.x<=moux+moupm) && (mouy-moupm<=elm.y && elm.y<=mouy+moupm) ){
         elm.remove();
         tempscore+=1;
       }
     });
-    console.log(this.score , tempscore);
-    this.score+=tempscore;
-
-    //タピオカ同士の当たり判定
+    //最後の3秒は、ボーナスタイム
+    if(this.time<=27000){
+      this.score+=tempscore;
+    }else{
+      tempscore+=1;//掛け算で0をかけちゃうのを防ぐ
+      this.score+=this.score*tempscore;
+    }
     
-    //スコアと時間表示
+    //スコアと時間表示とオブジェクトの数
     this.scoretxt.text = "Score : " + this.score;
     this.time+=app.deltaTime;
-    this.timetxt.text = "Time  : " + Math.floor(this.time/100)/10;
+    this.timetxt.text = "Time  : " + Math.floor(this.time/1000);
+    //this.objcnt=this.tapigroup.children.length;
+    //console.log(this.objcnt);
     
     //一定間隔でタピオカ追加
     if (app.frame % 3 == 0) {
       Tapioka().addChildTo(this.tapigroup);
       //console.log(this.tapigroup);
+    }
+
+    //終了条件
+    if(this.time>=30000){
+      this.time=0;
+      this.exit();
     }
   },
 
