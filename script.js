@@ -68,6 +68,7 @@ phina.define("MainScene", {
     this.superInit(options);
 
     this.score=0;
+    console.log(this.score);
 
     this.scoretxt = Label({
       text: '',
@@ -91,15 +92,15 @@ phina.define("MainScene", {
     moux=this.mouse.x;
     mouy=this.mouse.y;
     moupm=Math.floor(MOUSE_CIRCLE_RADIUS/2)+5; //マウスの当たり判定+-いくつまでにするか
-    tempscore=this.score
+    tempscore=this.score;
+    console.log(this.score , tempscore);
     this.tapigroup.children.each(function(elm){
       if( (moux-moupm<=elm.x && elm.x<=moux+moupm) && (mouy-moupm<=elm.y && elm.y<=mouy+moupm) ){
         elm.remove();
         tempscore+=1;
       }
-      this.score+=tempscore;
-      console.log(this.score);
     });
+    this.score+=tempscore;
 
     //タピオカ同士の当たり判定
     
