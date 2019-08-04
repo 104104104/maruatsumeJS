@@ -72,7 +72,7 @@ phina.define("MainScene", {
 
     //時間を表す背景の四角
     this.timerect = RectangleShape({
-      width: WIDTH, 
+      width: WIDTH,
       height: HEIGHT,
       fill: 'gray',
       stroke: null,
@@ -86,13 +86,13 @@ phina.define("MainScene", {
 
     //ヘッダの背景
     var header = RectangleShape({
-      width: WIDTH, 
+      width: WIDTH,
       height: Math.floor(170),
       fill: 'gray',
     }).addChildTo(this);
     header.setPosition(this.gridX.span(8), this.gridY.span(1));
     this.headerTime = RectangleShape({
-      width: 0, 
+      width: 0,
       height: Math.floor(170),
       fill: 'black',
     }).addChildTo(this);
@@ -104,21 +104,21 @@ phina.define("MainScene", {
       fontSize: 48,
       fill: 'white',
       x: this.gridX.span(3),
-      y: this.gridY.span(0)+30,
+      y: this.gridY.span(0) + 30,
     }).addChildTo(this);
     this.txt2 = Label({
       text: 'Time',
       fontSize: 48,
       fill: 'white',
       x: this.gridX.center(),
-      y: this.gridY.span(0)+30,
+      y: this.gridY.span(0) + 30,
     }).addChildTo(this);
     this.txt3 = Label({
       text: 'cat&tapioka',
       fontSize: 48,
       fill: 'white',
-      x: this.gridX.span(12)+30,
-      y: this.gridY.span(0)+30,
+      x: this.gridX.span(12) + 30,
+      y: this.gridY.span(0) + 30,
     }).addChildTo(this);
     this.txt4 = Label({
       text: 'TIME',
@@ -129,16 +129,16 @@ phina.define("MainScene", {
     }).addChildTo(this);
 
     //スコアなど表示
-    this.score=0;
-    this.time=0;
-    this.objcnt=1;
+    this.score = 0;
+    this.time = 0;
+    this.objcnt = 1;
 
     this.scoretxt = Label({
       text: '',
       fontSize: 48,
       fill: 'white',
       x: this.gridX.span(3),
-      y: this.gridY.span(1)+20,
+      y: this.gridY.span(1) + 20,
     }).addChildTo(this);
 
     this.timetxt = Label({
@@ -146,21 +146,21 @@ phina.define("MainScene", {
       fontSize: 48,
       fill: 'white',
       x: this.gridX.center(),
-      y: this.gridY.span(1)+20,
+      y: this.gridY.span(1) + 20,
     }).addChildTo(this);
 
     this.objcnttxt = Label({
       text: '',
       fontSize: 48,
       fill: 'white',
-      x: this.gridX.span(12)+30,
-      y: this.gridY.span(1)+20,
+      x: this.gridX.span(12) + 30,
+      y: this.gridY.span(1) + 20,
     }).addChildTo(this);
 
-    this.nekoTapiRevel=1;
-    this.nekoTapiRevelLast=1;
-    this.nekoTapiRevelFlug1=0;
-    this.nekoTapiRevelFlug2=0;
+    this.nekoTapiRevel = 1;
+    this.nekoTapiRevelLast = 1;
+    this.nekoTapiRevelFlug1 = 0;
+    this.nekoTapiRevelFlug2 = 0;
   },
 
 
@@ -168,90 +168,113 @@ phina.define("MainScene", {
   update: function (app) {
     //タピオカとマウスの当たり判定
     //foreachの中から、親のクラスが参照できないので、いったんマウス座標を格納
-    moux=this.mouse.x;
-    mouy=this.mouse.y;
-    moupm=Math.floor(MOUSE_CIRCLE_RADIUS/2)+5; //マウスの当たり判定+-いくつまでにするか
-    tempscore=0;
-    tempobjcnt=this.objcnt;
-    this.tapigroup.children.each(function(elm){
-      if( (moux-moupm<=elm.x && elm.x<=moux+moupm) && (mouy-moupm<=elm.y && elm.y<=mouy+moupm) ){
+    moux = this.mouse.x;
+    mouy = this.mouse.y;
+    moupm = Math.floor(MOUSE_CIRCLE_RADIUS / 2) + 5; //マウスの当たり判定+-いくつまでにするか
+    tempscore = 0;
+    tempobjcnt = this.objcnt;
+    this.tapigroup.children.each(function (elm) {
+      if ((moux - moupm <= elm.x && elm.x <= moux + moupm) && (mouy - moupm <= elm.y && elm.y <= mouy + moupm)) {
         elm.remove();
-        tempscore+=1;
+        tempscore += 1;
       }
     });
 
-    this.score+=tempscore;
-    
+    this.score += tempscore;
+
     //レベルの値
     //console.log(this.objcnt, this.nekoTapiRevelFlug1, this.nekoTapiRevel);
-    if(this.objcnt>=10 && this.nekoTapiRevelFlug1==0){
-      this.nekoTapiRevel+=1;
-      this.nekoTapiRevelFlug1=1;
-      console.log(this.nekoTapiRevel);
+    if (this.objcnt >= 10 && this.nekoTapiRevelFlug1 == 0) {
+      this.nekoTapiRevel += 1;
+      this.nekoTapiRevelFlug1 = 1;
     }
-    if(this.objcnt>=20 && this.nekoTapiRevelFlug2==0){
-      this.nekoTapiRevel+=1;
-      this.nekoTapiRevelFlug2=1;
+    if (this.objcnt >= 20 && this.nekoTapiRevelFlug2 == 0) {
+      this.nekoTapiRevel += 1;
+      this.nekoTapiRevelFlug2 = 1;
     }
-    if(this.nekoTapiRevelFlug1==1 && this.nekoTapiRevelFlug2==1){
-      if(this.objcnt<=190){
-        this.nekoTapiRevel = Math.floor(this.objcnt/100)+1;
-        console.log('bbbbb');
-      }else{
-        this.nekoTapiRevel = Math.floor(this.objcnt/30)+1;
-        console.log("aaaaa");
+    if (this.nekoTapiRevelFlug1 == 1 && this.nekoTapiRevelFlug2 == 1) {
+      if (this.objcnt <= 190) {
+        this.nekoTapiRevel = Math.floor(this.objcnt / 100) + 1;
+      } else {
+        this.nekoTapiRevel = Math.floor(this.objcnt / 30) + 1;
       }
     }
     //console.log(this.nekoTapiRevel);
-    
+
     //一定間隔でタピオカ追加
     //画面内部の猫とタピオカの数に応じて、追加の割合が上がる(同時に複数個投入される)
     //時間を過ぎたら、追加しない
     //最大値は1000
-    if (app.frame % 15 == 0 && this.time<=30000 && this.objcnt<=30) {
-      for(var i=0; i<this.nekoTapiRevel; i++){
-        if(this.tapigroup.children.length<=1000){
+    if (app.frame % 15 == 0 && this.time <= 30000 && this.objcnt <= 30) {
+      for (var i = 0; i < this.nekoTapiRevel; i++) {
+        if (this.tapigroup.children.length <= 1000) {
           Tapioka().addChildTo(this.tapigroup);
         }
       }
     }
-    if (app.frame % 3 == 0 && this.time<=30000 && this.objcnt>=31) {
-      for(var i=0; i<this.nekoTapiRevel; i++){
-        if(this.tapigroup.children.length<=1000){
+    if (app.frame % 3 == 0 && this.time <= 30000 && this.objcnt >= 31) {
+      for (var i = 0; i < this.nekoTapiRevel; i++) {
+        if (this.tapigroup.children.length <= 1000) {
           Tapioka().addChildTo(this.tapigroup);
         }
       }
     }
 
     //スコアと時間とオブジェクトの数表示
-    this.time+=app.deltaTime;
+    this.time += app.deltaTime;
     globalTime = this.time
-    this.objcnt=this.tapigroup.children.length;
+    this.objcnt = this.tapigroup.children.length;
     this.scoretxt.text = this.score;
-    if(this.time<=30000){
-    this.timetxt.text=30-Math.floor(this.time/1000);
-    }else{
-      this.timetxt.text=0;
+    if (this.time <= 30000) {
+      this.timetxt.text = 30 - Math.floor(this.time / 1000);
+    } else {
+      this.timetxt.text = 0;
     }
     this.objcnttxt.text = this.objcnt + "個";
 
     //時間の四角表示。だんだん短くなる
-    if(this.time<=30000){
-      this.timerect.height=HEIGHT - ((this.time/30000) * HEIGHT)+1;
-      this.timerect.width =WIDTH  - ((this.time/30000) * WIDTH)+1;
-      this.headerTime.width=((this.time/30000) * WIDTH*2)+1;
+    if (this.time <= 30000) {
+      this.timerect.height = HEIGHT - ((this.time / 30000) * HEIGHT) + 1;
+      this.timerect.width = WIDTH - ((this.time / 30000) * WIDTH) + 1;
+      this.headerTime.width = ((this.time / 30000) * WIDTH * 2) + 1;
     }
-      
+
 
     //終了条件
-    if(this.time>=30000){
+    if (this.time >= 30000) {
+      this.finishrec = RectangleShape({
+        x: this.gridX.center(),
+        y: this.gridY.span(5),
+        width: WIDTH / 3,
+        height: 120,
+        fill: 'white',
+        stroke: null,
+      }).addChildTo(this);
       this.finishtxt = Label({
         text: 'Finish',
         fontSize: 96,
         fill: 'black',
         x: this.gridX.center(),
-        y: this.gridY.center(),
+        y: this.gridY.span(5),
       }).addChildTo(this);
+
+      /*
+      var button = Button({
+        x: 320,             // x座標
+        y: 480,             // y座標
+        width: 150,         // 横サイズ
+        height: 100,        // 縦サイズ
+        text: "Title",     // 表示文字
+        fontSize: 32,       // 文字サイズ
+        fontColor: 'white', // 文字色
+        cornerRadius: 10,   // 角丸み
+        fill: 'skyblue',    // ボタン色
+        stroke: null,     // 枠太さ
+      }).addChildTo(this);
+      button.onclick = function(){
+        this.exit();
+      };
+      */
     }
   },
 
@@ -273,7 +296,7 @@ phina.define("Mouse", {
 
   update: function (app) {
     //制限時間をすぎたら、動かなくなる
-    if(globalTime<=30000){
+    if (globalTime <= 30000) {
       var p = app.pointer;
       this.x = p.x;
       this.y = p.y;
@@ -287,14 +310,14 @@ phina.define("Tapioka", {
 
   init: function () {
     //randpicで画像をランダムに決める
-    var picstr="";
-    var randpic=Math.round(Math.random() * 3);
-    if(randpic==0){
-      picstr="tapioka0";
-    }else if(randpic==1){
-      picstr="tapioka1";
-    }else{
-      picstr="tapioka2";
+    var picstr = "";
+    var randpic = Math.round(Math.random() * 3);
+    if (randpic == 0) {
+      picstr = "tapioka0";
+    } else if (randpic == 1) {
+      picstr = "tapioka1";
+    } else {
+      picstr = "tapioka2";
     }
     this.superInit(picstr);
     //初期位置は、4つの画面のはじのどこか rand4で場所を決める
@@ -315,77 +338,77 @@ phina.define("Tapioka", {
 
     //sizeで、大きさと動く早さが決まる
     //randsizeで大きさを決める
-    var randsize=Math.round(Math.random() * 100);
+    var randsize = Math.round(Math.random() * 100);
     //console.log(randsize);
-    if(randsize<=30){
-      this.size=0;
+    if (randsize <= 30) {
+      this.size = 0;
       //大きさは、画面サイズとの比率で決まる
-      this.width = Math.floor(WIDTH/30);
-      this.height = Math.floor(WIDTH/30);
-      this.speed=Math.floor(WIDTH/300);
+      this.width = Math.floor(WIDTH / 30);
+      this.height = Math.floor(WIDTH / 30);
+      this.speed = Math.floor(WIDTH / 300);
       //回転の早さも大きさ依存
-      this.rotatelen=20;
-    }else if(31<= randsize && randsize<=95){
-      this.size=1;
+      this.rotatelen = 20;
+    } else if (31 <= randsize && randsize <= 95) {
+      this.size = 1;
       //大きさは、画面サイズとの比率で決まる
-      this.width = Math.floor(WIDTH/15);
-      this.height = Math.floor(WIDTH/15);
-      this.speed=Math.floor(WIDTH/300);
+      this.width = Math.floor(WIDTH / 15);
+      this.height = Math.floor(WIDTH / 15);
+      this.speed = Math.floor(WIDTH / 300);
       //回転の早さも大きさ依存
-      this.rotatelen=8;
-    }else{
-      this.size=2;
+      this.rotatelen = 8;
+    } else {
+      this.size = 2;
       //大きさは、画面サイズとの比率で決まる
-      this.width = Math.floor(WIDTH/8);
-      this.height = Math.floor(WIDTH/8);
-      this.speed=Math.floor(WIDTH/300);
+      this.width = Math.floor(WIDTH / 8);
+      this.height = Math.floor(WIDTH / 8);
+      this.speed = Math.floor(WIDTH / 300);
       //回転の早さも大きさ依存
-      this.rotatelen=1;
+      this.rotatelen = 1;
     }
     //console.log(this.width, this.height);
 
     //rotateで回転方向を決める
     this.rotate = Math.round(Math.random() * 2);
     //移動の為のベクトル
-    this.tapivec=new phina.geom.Vector2();
-    this.tapivec.x=0;
-    this.tapivec.y=0;
+    this.tapivec = new phina.geom.Vector2();
+    this.tapivec.x = 0;
+    this.tapivec.y = 0;
   },
 
   update: function (app) {
-    if(this.rotate==0){
-      this.rotation+=this.rotatelen;
-    }else{
-      this.rotation-=this.rotatelen;
+    if (this.rotate == 0) {
+      this.rotation += this.rotatelen;
+    } else {
+      this.rotation -= this.rotatelen;
     }
-    this.tapivec.x = app.pointer.x-this.x;
-    this.tapivec.y = app.pointer.y-this.y;
+    this.tapivec.x = app.pointer.x - this.x;
+    this.tapivec.y = app.pointer.y - this.y;
     //console.log(this.tapivec.x, this.tapivec.y);
     //ベクトルの正規化(動きの滑らかさのため、大きさ2で正規化)
-    var tapivecScalar=Math.sqrt(this.tapivec.x*this.tapivec.x + this.tapivec.y*this.tapivec.y)/2;
+    var tapivecScalar = Math.sqrt(this.tapivec.x * this.tapivec.x + this.tapivec.y * this.tapivec.y) / 2;
     //console.log(tapivecScalar);
     //console.log(this.tapivec.x/tapivecScalar);
 
-     //最低でもちょっとは動かないと、後半戦が面白くないので、その為の値
-     var minmove=1;
-    var tapivecxNotInt=this.tapivec.x/tapivecScalar;
-    if(tapivecxNotInt>=0){
-      this.tapivec.x = Math.ceil(this.tapivec.x/tapivecScalar)+minmove;
-    }else{
-      this.tapivec.x = Math.floor(this.tapivec.x/tapivecScalar)-minmove;
+    //最低でもちょっとは動かないと、後半戦が面白くないので、その為の値
+    var minmove = 1;
+    var tapivecxNotInt = this.tapivec.x / tapivecScalar;
+    if (tapivecxNotInt >= 0) {
+      this.tapivec.x = Math.ceil(this.tapivec.x / tapivecScalar) + minmove;
+    } else {
+      this.tapivec.x = Math.floor(this.tapivec.x / tapivecScalar) - minmove;
     }
 
-    var tapivecyNotInt=this.tapivec.y/tapivecScalar;
-    if(tapivecyNotInt>=0){
-      this.tapivec.y = Math.ceil(this.tapivec.y/tapivecScalar)+minmove;
-    }else{
-      this.tapivec.y = Math.floor(this.tapivec.y/tapivecScalar)-minmove;
+    var tapivecyNotInt = this.tapivec.y / tapivecScalar;
+    if (tapivecyNotInt >= 0) {
+      this.tapivec.y = Math.ceil(this.tapivec.y / tapivecScalar) + minmove;
+    } else {
+      this.tapivec.y = Math.floor(this.tapivec.y / tapivecScalar) - minmove;
     }
     //console.log(this.tapivec.x, this.tapivec.y);
     //移動の為の足し算。時間を過ぎたら、動かなくなる
-    if(globalTime<=30000){
-      this.x+=this.tapivec.x*this.speed;
-      this.y+=this.tapivec.y*this.speed;
+    if (globalTime <= 30000) {
+      this.x += this.tapivec.x * this.speed;
+      this.y += this.tapivec.y * this.speed;
     }
     /*
     //八方向にしか追尾しないバージョン
