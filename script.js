@@ -226,12 +226,27 @@ phina.define("Tapioka", {
     }
     this.tapivec.x = app.pointer.x-this.x;
     this.tapivec.y = app.pointer.y-this.y;
+    //console.log(this.tapivec.x, this.tapivec.y);
     //ベクトルの正規化
     var tapivecScalar=Math.sqrt(this.tapivec.x*this.tapivec.x + this.tapivec.y*this.tapivec.y);
-    this.tapivec.x = Math.floor(this.tapivec.x/tapivecScalar);
-    this.tapivec.y = Math.floor(this.tapivec.y/tapivecScalar);
-    this.x+=this.tapivec.x*10;
-    this.y+=this.tapivec.y*10;
+    //console.log(tapivecScalar);
+    //console.log(this.tapivec.x/tapivecScalar);
+    var tapivecxNotInt=this.tapivec.x/tapivecScalar;
+    if(tapivecxNotInt>=0){
+      this.tapivec.x = Math.ceil(this.tapivec.x/tapivecScalar);
+    }else{
+      this.tapivec.x = Math.floor(this.tapivec.x/tapivecScalar);
+    }
+
+    var tapivecyNotInt=this.tapivec.y/tapivecScalar;
+    if(tapivecyNotInt>=0){
+      this.tapivec.y = Math.ceil(this.tapivec.y/tapivecScalar);
+    }else{
+      this.tapivec.y = Math.floor(this.tapivec.y/tapivecScalar);
+    }
+    //console.log(this.tapivec.x, this.tapivec.y);
+    this.x+=this.tapivec.x;
+    this.y+=this.tapivec.y;
     /*
     //八方向にしか追尾しないバージョン
     var p = app.pointer;
