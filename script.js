@@ -159,6 +159,8 @@ phina.define("MainScene", {
 
     this.nekoTapiRevel=1;
     this.nekoTapiRevelLast=1;
+    this.nekoTapiRevelFlug1=0;
+    this.nekoTapiRevelFlug2=0;
   },
 
 
@@ -178,29 +180,46 @@ phina.define("MainScene", {
       }
     });
 
-    bounas=0
-    //最後の3秒は、ボーナスタイム
-    //時間を過ぎたら、スコア増えない
-    if(this.time<=30000){
-      if(this.time<=27000){
-        this.score+=tempscore;
-      }else{
-        bounas+=tempobjcnt;
-        tempscore+=1;//掛け算で0をかけちゃうのを防ぐ
-        this.score+=tempscore+bounas;
-      }
-    }
+    this.score+=tempscore;
     
     //レベルの値
-      this.nekoTapiRevel = Math.floor(this.objcnt/100)+1;
-      //console.log(this.nekoTapiRevel);
+    //console.log(this.objcnt, this.nekoTapiRevelFlug1, this.nekoTapiRevel);
+    if(this.objcnt>=10 && this.nekoTapiRevelFlug1==0){
+      this.nekoTapiRevel+=1;
+      this.nekoTapiRevelFlug1=1;
+      console.log(this.nekoTapiRevel);
+    }
+    if(this.objcnt>=20 && this.nekoTapiRevelFlug2==0){
+      this.nekoTapiRevel+=1;
+      this.nekoTapiRevelFlug2=1;
+    }
+    if(this.nekoTapiRevelFlug1==1 && this.nekoTapiRevelFlug2==1){
+      if(this.objcnt<=190){
+        this.nekoTapiRevel = Math.floor(this.objcnt/100)+1;
+        console.log('bbbbb');
+      }else{
+        this.nekoTapiRevel = Math.floor(this.objcnt/30)+1;
+        console.log("aaaaa");
+      }
+    }
+    //console.log(this.nekoTapiRevel);
     
     //一定間隔でタピオカ追加
     //画面内部の猫とタピオカの数に応じて、追加の割合が上がる(同時に複数個投入される)
     //時間を過ぎたら、追加しない
-    if (app.frame % 3 == 0 && this.time<=30000) {
+    //最大値は1000
+    if (app.frame % 15 == 0 && this.time<=30000 && this.objcnt<=30) {
       for(var i=0; i<this.nekoTapiRevel; i++){
-        Tapioka().addChildTo(this.tapigroup);
+        if(this.tapigroup.children.length<=1000){
+          Tapioka().addChildTo(this.tapigroup);
+        }
+      }
+    }
+    if (app.frame % 3 == 0 && this.time<=30000 && this.objcnt>=31) {
+      for(var i=0; i<this.nekoTapiRevel; i++){
+        if(this.tapigroup.children.length<=1000){
+          Tapioka().addChildTo(this.tapigroup);
+        }
       }
     }
 
@@ -297,7 +316,7 @@ phina.define("Tapioka", {
     //sizeで、大きさと動く早さが決まる
     //randsizeで大きさを決める
     var randsize=Math.round(Math.random() * 100);
-    console.log(randsize);
+    //console.log(randsize);
     if(randsize<=30){
       this.size=0;
       //大きさは、画面サイズとの比率で決まる
@@ -306,7 +325,7 @@ phina.define("Tapioka", {
       this.speed=Math.floor(WIDTH/300);
       //回転の早さも大きさ依存
       this.rotatelen=20;
-    }else if(31<= randsize && randsize<=98){
+    }else if(31<= randsize && randsize<=95){
       this.size=1;
       //大きさは、画面サイズとの比率で決まる
       this.width = Math.floor(WIDTH/15);
@@ -317,13 +336,13 @@ phina.define("Tapioka", {
     }else{
       this.size=2;
       //大きさは、画面サイズとの比率で決まる
-      this.width = Math.floor(WIDTH/10);
-      this.height = Math.floor(WIDTH/10);
+      this.width = Math.floor(WIDTH/8);
+      this.height = Math.floor(WIDTH/8);
       this.speed=Math.floor(WIDTH/300);
       //回転の早さも大きさ依存
       this.rotatelen=1;
     }
-    console.log(this.width, this.height);
+    //console.log(this.width, this.height);
 
     //rotateで回転方向を決める
     this.rotate = Math.round(Math.random() * 2);
