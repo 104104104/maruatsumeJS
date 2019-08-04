@@ -129,7 +129,7 @@ phina.define("MainScene", {
     }
     
     //レベルの値
-      this.nekoTapiRevel = Math.floor(this.objcnt/100)+1;
+      this.nekoTapiRevel = Math.floor(this.objcnt/30)+1;
       //console.log(this.nekoTapiRevel);
     
     //一定間隔でタピオカ追加
@@ -219,18 +219,24 @@ phina.define("Tapioka", {
       this.width = Math.floor(WIDTH/30);
       this.height = Math.floor(WIDTH/30);
       this.speed=Math.floor(WIDTH/300);
-    }else if(31<= randsize && randsize<=99){
+      //回転の早さも大きさ依存
+      this.rotatelen=30;
+    }else if(31<= randsize && randsize<=98){
       this.size=1;
       //大きさは、画面サイズとの比率で決まる
       this.width = Math.floor(WIDTH/15);
       this.height = Math.floor(WIDTH/15);
-      this.speed=Math.floor(WIDTH/600);
+      this.speed=Math.floor(WIDTH/300);
+      //回転の早さも大きさ依存
+      this.rotatelen=10;
     }else{
       this.size=2;
       //大きさは、画面サイズとの比率で決まる
       this.width = Math.floor(WIDTH/5);
       this.height = Math.floor(WIDTH/5);
-      this.speed=Math.floor(WIDTH/900);
+      this.speed=Math.floor(WIDTH/1000)+1;
+      //回転の早さも大きさ依存
+      this.rotatelen=1;
     }
     console.log(this.width, this.height);
 
@@ -244,9 +250,9 @@ phina.define("Tapioka", {
 
   update: function (app) {
     if(this.rotate==0){
-      this.rotation+=10;
+      this.rotation+=this.rotatelen;
     }else{
-      this.rotation-=10;
+      this.rotation-=this.rotatelen;
     }
     this.tapivec.x = app.pointer.x-this.x;
     this.tapivec.y = app.pointer.y-this.y;
