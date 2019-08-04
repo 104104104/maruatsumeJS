@@ -98,6 +98,7 @@ phina.define("MainScene", {
     }).addChildTo(this);
 
     this.nekoTapiRevel=1;
+    this.nekoTapiRevelLast=1;
   },
 
 
@@ -128,12 +129,12 @@ phina.define("MainScene", {
     }
     
     //レベルの値
-    this.nekoTapiRevel = Math.floor(this.objcnt/100)+1;
-    console.log(this.nekoTapiRevel);
+      this.nekoTapiRevel = Math.floor(this.objcnt/30)+1;
+      console.log(this.nekoTapiRevel);
     
     //一定間隔でタピオカ追加
     //画面内部の猫とタピオカの数に応じて、追加の割合が上がる(同時に複数個投入される)
-    if (app.frame % 3 == 0) {
+    if (app.frame % 6 == 0) {
       for(var i=0; i<this.nekoTapiRevel; i++){
         Tapioka().addChildTo(this.tapigroup);
       }
@@ -211,6 +212,10 @@ phina.define("Tapioka", {
     this.height = 64;
     //rotateで回転方向を決める
     this.rotate = Math.round(Math.random() * 2);
+    //移動の為のベクトル
+    this.tapivec=new phina.geom.Vector2();
+    this.tapivec.x=0;
+    this.tapivec.y=0;
   },
 
   update: function (app) {
@@ -219,6 +224,13 @@ phina.define("Tapioka", {
     }else{
       this.rotation-=10;
     }
+    this.tapivec.x = app.pointer.x-this.x;
+    this.tapivec.y = app.pointer.y-this.y;
+    //this.tapivec.normalize(); 
+    this.x+=this.tapivec.x-30;
+    this.y+=this.tapivec.y-30;
+    /*
+    //八方向にしか追尾しないバージョン
     var p = app.pointer;
     if (this.x >= p.x) {
       this.x -= 10;
@@ -229,7 +241,7 @@ phina.define("Tapioka", {
       this.y -= 10;
     } else {
       this.y += 10;
-    }
+    }*/
   },
 });
 
