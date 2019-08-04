@@ -48,7 +48,7 @@ phina.define('MyTitleScene', {
     });
     this.superInit(options);
 
-    var label = Label('MyTitleScene').addChildTo(this);
+    var label = Label('猫とタピオカ').addChildTo(this);
     label.x = this.gridX.center();
     label.y = this.gridY.center();
   },
@@ -69,32 +69,89 @@ phina.define("MainScene", {
     });
     this.superInit(options);
 
+    //時間を表す背景の四角
+    this.timerect = RectangleShape({
+      width: WIDTH*2, 
+      height: HEIGHT*2,
+      fill: 'gray',
+    }).addChildTo(this);
+    this.timerect.setPosition(this.gridX.span(1), this.gridY.span(16));
+
     this.mouse = Mouse().addChildTo(this);
     this.tapigroup = DisplayElement().addChildTo(this);
     Tapioka().addChildTo(this.tapigroup);
 
+    //ヘッダの背景
+    var header = RectangleShape({
+      width: WIDTH, 
+      height: Math.floor(170),
+      fill: 'black',
+    }).addChildTo(this);
+    header.setPosition(this.gridX.span(8), this.gridY.span(1));
+    this.headerTime = RectangleShape({
+      width: 0, 
+      height: Math.floor(170),
+      fill: 'gray',
+    }).addChildTo(this);
+    this.headerTime.setPosition(this.gridX.span(0), this.gridY.span(1));
+
+    //説明の文字
+    this.txt1 = Label({
+      text: 'Score',
+      fontSize: 48,
+      fill: 'white',
+      x: this.gridX.span(3),
+      y: this.gridY.span(0)+30,
+    }).addChildTo(this);
+    this.txt2 = Label({
+      text: 'Time',
+      fontSize: 48,
+      fill: 'white',
+      x: this.gridX.center(),
+      y: this.gridY.span(0)+30,
+    }).addChildTo(this);
+    this.txt3 = Label({
+      text: 'cat&tapioka',
+      fontSize: 48,
+      fill: 'white',
+      x: this.gridX.span(12)+30,
+      y: this.gridY.span(0)+30,
+    }).addChildTo(this);
+    this.txt4 = Label({
+      text: 'TIME',
+      fontSize: 32,
+      fill: 'white',
+      x: this.gridX.span(1),
+      y: this.gridY.span(15),
+    }).addChildTo(this);
+
+    //スコアなど表示
     this.score=0;
+    this.time=0;
+    this.objcnt=1;
+
     this.scoretxt = Label({
       text: '',
       fontSize: 48,
-      x: this.gridX.center(),
-      y: this.gridY.center()-50,
+      fill: 'white',
+      x: this.gridX.span(3),
+      y: this.gridY.span(1)+20,
     }).addChildTo(this);
 
-    this.time=0;
     this.timetxt = Label({
       text: '',
       fontSize: 48,
+      fill: 'white',
       x: this.gridX.center(),
-      y: this.gridY.center(),
+      y: this.gridY.span(1)+20,
     }).addChildTo(this);
 
-    this.objcnt=1;
     this.objcnttxt = Label({
       text: '',
       fontSize: 48,
-      x: this.gridX.center(),
-      y: this.gridY.center()+50,
+      fill: 'white',
+      x: this.gridX.span(12)+30,
+      y: this.gridY.span(1)+20,
     }).addChildTo(this);
 
     this.nekoTapiRevel=1;
@@ -141,11 +198,19 @@ phina.define("MainScene", {
     }
 
     //スコアと時間とオブジェクトの数表示
-    this.scoretxt.text = "Score : " + this.score;
+    //this.scoretxt.text = "Score : " + this.score;
     this.time+=app.deltaTime;
-    this.timetxt.text = "Time  : " + Math.floor(this.time/1000);
     this.objcnt=this.tapigroup.children.length;
-    this.objcnttxt.text = "猫とタピオカ  : " + this.objcnt;
+    this.scoretxt.text = this.score;
+    this.timetxt.text=30-Math.floor(this.time/1000);
+    this.objcnttxt.text = this.objcnt + "個";
+
+    //時間の棒表示。だんだん短くなる
+    this.timerect.height=HEIGHT*2 - ((this.time/30000) * HEIGHT*2);
+    this.headerTime.width=((this.time/30000) * WIDTH*2);
+    
+
+
 
     //終了条件
     if(this.time>=30000){
