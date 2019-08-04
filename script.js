@@ -129,12 +129,12 @@ phina.define("MainScene", {
     }
     
     //レベルの値
-      this.nekoTapiRevel = Math.floor(this.objcnt/30)+1;
+      this.nekoTapiRevel = Math.floor(this.objcnt/100)+1;
       //console.log(this.nekoTapiRevel);
     
     //一定間隔でタピオカ追加
     //画面内部の猫とタピオカの数に応じて、追加の割合が上がる(同時に複数個投入される)
-    if (app.frame % 6 == 0) {
+    if (app.frame % 3 == 0) {
       for(var i=0; i<this.nekoTapiRevel; i++){
         Tapioka().addChildTo(this.tapigroup);
       }
@@ -220,7 +220,7 @@ phina.define("Tapioka", {
       this.height = Math.floor(WIDTH/30);
       this.speed=Math.floor(WIDTH/300);
       //回転の早さも大きさ依存
-      this.rotatelen=30;
+      this.rotatelen=20;
     }else if(31<= randsize && randsize<=98){
       this.size=1;
       //大きさは、画面サイズとの比率で決まる
@@ -228,13 +228,13 @@ phina.define("Tapioka", {
       this.height = Math.floor(WIDTH/15);
       this.speed=Math.floor(WIDTH/300);
       //回転の早さも大きさ依存
-      this.rotatelen=10;
+      this.rotatelen=8;
     }else{
       this.size=2;
       //大きさは、画面サイズとの比率で決まる
-      this.width = Math.floor(WIDTH/5);
-      this.height = Math.floor(WIDTH/5);
-      this.speed=Math.floor(WIDTH/1000)+1;
+      this.width = Math.floor(WIDTH/10);
+      this.height = Math.floor(WIDTH/10);
+      this.speed=Math.floor(WIDTH/300);
       //回転の早さも大きさ依存
       this.rotatelen=1;
     }
@@ -257,8 +257,8 @@ phina.define("Tapioka", {
     this.tapivec.x = app.pointer.x-this.x;
     this.tapivec.y = app.pointer.y-this.y;
     //console.log(this.tapivec.x, this.tapivec.y);
-    //ベクトルの正規化(動きの滑らかさのため、大きさ3で正規化)
-    var tapivecScalar=Math.sqrt(this.tapivec.x*this.tapivec.x + this.tapivec.y*this.tapivec.y)/3;
+    //ベクトルの正規化(動きの滑らかさのため、大きさ2で正規化)
+    var tapivecScalar=Math.sqrt(this.tapivec.x*this.tapivec.x + this.tapivec.y*this.tapivec.y)/2;
     //console.log(tapivecScalar);
     //console.log(this.tapivec.x/tapivecScalar);
     var tapivecxNotInt=this.tapivec.x/tapivecScalar;
