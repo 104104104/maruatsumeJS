@@ -227,8 +227,8 @@ phina.define("Tapioka", {
     this.tapivec.x = app.pointer.x-this.x;
     this.tapivec.y = app.pointer.y-this.y;
     //console.log(this.tapivec.x, this.tapivec.y);
-    //ベクトルの正規化
-    var tapivecScalar=Math.sqrt(this.tapivec.x*this.tapivec.x + this.tapivec.y*this.tapivec.y);
+    //ベクトルの正規化(大きさ3で正規化)
+    var tapivecScalar=Math.sqrt(this.tapivec.x*this.tapivec.x + this.tapivec.y*this.tapivec.y)/3;
     //console.log(tapivecScalar);
     //console.log(this.tapivec.x/tapivecScalar);
     var tapivecxNotInt=this.tapivec.x/tapivecScalar;
