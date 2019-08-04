@@ -71,11 +71,25 @@ phina.define("MainScene", {
 
     //時間を表す背景の四角
     this.timerect = RectangleShape({
-      width: WIDTH*2, 
-      height: HEIGHT*2,
-      fill: 'gray',
+      width: WIDTH, 
+      height: HEIGHT,
+      fill: 'green',
+      stroke: null,
+      blendMode: 'lighter',
     }).addChildTo(this);
-    this.timerect.setPosition(this.gridX.span(1), this.gridY.span(16));
+    this.timerect.setPosition(this.gridX.center(), this.gridY.center());
+    // 色をだんだん変える為、プロパティ追加
+    this.timerect.r = 0;
+    this.timerect.g = 255;
+    this.timerect.b = 0;
+    // プロパティ値変化
+    this.timerect.tweener
+                .to({r: 0, g:255, b:0}, 9000)
+                .to({r: 255, g: 255, b: 10}, 1000)
+                .to({r: 255, g: 255, b: 10}, 9000)
+                .to({r: 255, g:10 , b: 10}, 1000)
+                .to({r: 255, g:0 , b: 0}, 10000)
+                .play();
 
     this.mouse = Mouse().addChildTo(this);
     this.tapigroup = DisplayElement().addChildTo(this);
@@ -205,8 +219,10 @@ phina.define("MainScene", {
     this.timetxt.text=30-Math.floor(this.time/1000);
     this.objcnttxt.text = this.objcnt + "個";
 
-    //時間の棒表示。だんだん短くなる
-    this.timerect.height=HEIGHT*2 - ((this.time/30000) * HEIGHT*2);
+    //時間の四角表示。だんだん短くなる
+    this.timerect.height=HEIGHT - ((this.time/30000) * HEIGHT);
+    this.timerect.width =WIDTH  - ((this.time/30000) * WIDTH);
+    this.timerect.fill = 'rgb({0}, {1}, {2})'.format(this.timerect.r, this.timerect.g, this.timerect.b);
     this.headerTime.width=((this.time/30000) * WIDTH*2);
     
 
@@ -232,7 +248,7 @@ phina.define("Mouse", {
       radius: MOUSE_CIRCLE_RADIUS,
     });
     this.superInit(options);
-    this.blendMode = 'lighter';
+    //this.blendMode = 'lighter';
   },
 
   update: function (app) {
@@ -326,18 +342,21 @@ phina.define("Tapioka", {
     var tapivecScalar=Math.sqrt(this.tapivec.x*this.tapivec.x + this.tapivec.y*this.tapivec.y)/2;
     //console.log(tapivecScalar);
     //console.log(this.tapivec.x/tapivecScalar);
+
+     //最低でもちょっとは動かないと、後半戦が面白くないので、その為の値
+     var minmove=1;
     var tapivecxNotInt=this.tapivec.x/tapivecScalar;
     if(tapivecxNotInt>=0){
-      this.tapivec.x = Math.ceil(this.tapivec.x/tapivecScalar);
+      this.tapivec.x = Math.ceil(this.tapivec.x/tapivecScalar)+minmove;
     }else{
-      this.tapivec.x = Math.floor(this.tapivec.x/tapivecScalar);
+      this.tapivec.x = Math.floor(this.tapivec.x/tapivecScalar)-minmove;
     }
 
     var tapivecyNotInt=this.tapivec.y/tapivecScalar;
     if(tapivecyNotInt>=0){
-      this.tapivec.y = Math.ceil(this.tapivec.y/tapivecScalar);
+      this.tapivec.y = Math.ceil(this.tapivec.y/tapivecScalar)+minmove;
     }else{
-      this.tapivec.y = Math.floor(this.tapivec.y/tapivecScalar);
+      this.tapivec.y = Math.floor(this.tapivec.y/tapivecScalar)-minmove;
     }
     //console.log(this.tapivec.x, this.tapivec.y);
     //移動の為の足し算
