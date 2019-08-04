@@ -14,6 +14,7 @@ var MOUSE_CIRCLE_RADIUS = 16;
 //画面サイズ
 var WIDTH = 918;
 var HEIGHT = 1378;
+var globalTime = 0;
 
 //シーンマネージャー
 phina.define('MyManagerScene', {
@@ -73,23 +74,11 @@ phina.define("MainScene", {
     this.timerect = RectangleShape({
       width: WIDTH, 
       height: HEIGHT,
-      fill: 'green',
+      fill: 'gray',
       stroke: null,
       blendMode: 'lighter',
     }).addChildTo(this);
     this.timerect.setPosition(this.gridX.center(), this.gridY.center());
-    // 色をだんだん変える為、プロパティ追加
-    this.timerect.r = 0;
-    this.timerect.g = 255;
-    this.timerect.b = 0;
-    // プロパティ値変化
-    this.timerect.tweener
-                .to({r: 0, g:255, b:0}, 9000)
-                .to({r: 255, g: 255, b: 10}, 1000)
-                .to({r: 255, g: 255, b: 10}, 9000)
-                .to({r: 255, g:10 , b: 10}, 1000)
-                .to({r: 255, g:0 , b: 0}, 10000)
-                .play();
 
     this.mouse = Mouse().addChildTo(this);
     this.tapigroup = DisplayElement().addChildTo(this);
@@ -99,13 +88,13 @@ phina.define("MainScene", {
     var header = RectangleShape({
       width: WIDTH, 
       height: Math.floor(170),
-      fill: 'black',
+      fill: 'gray',
     }).addChildTo(this);
     header.setPosition(this.gridX.span(8), this.gridY.span(1));
     this.headerTime = RectangleShape({
       width: 0, 
       height: Math.floor(170),
-      fill: 'gray',
+      fill: 'black',
     }).addChildTo(this);
     this.headerTime.setPosition(this.gridX.span(0), this.gridY.span(1));
 
@@ -191,12 +180,15 @@ phina.define("MainScene", {
 
     bounas=0
     //最後の3秒は、ボーナスタイム
-    if(this.time<=27000){
-      this.score+=tempscore;
-    }else{
-      bounas+=tempobjcnt;
-      tempscore+=1;//掛け算で0をかけちゃうのを防ぐ
-      this.score+=tempscore+bounas;
+    //時間を過ぎたら、スコア増えない
+    if(this.time<=30000){
+      if(this.time<=27000){
+        this.score+=tempscore;
+      }else{
+        bounas+=tempobjcnt;
+        tempscore+=1;//掛け算で0をかけちゃうのを防ぐ
+        this.score+=tempscore+bounas;
+      }
     }
     
     //レベルの値
@@ -205,33 +197,42 @@ phina.define("MainScene", {
     
     //一定間隔でタピオカ追加
     //画面内部の猫とタピオカの数に応じて、追加の割合が上がる(同時に複数個投入される)
-    if (app.frame % 3 == 0) {
+    //時間を過ぎたら、追加しない
+    if (app.frame % 3 == 0 && this.time<=30000) {
       for(var i=0; i<this.nekoTapiRevel; i++){
         Tapioka().addChildTo(this.tapigroup);
       }
     }
 
     //スコアと時間とオブジェクトの数表示
-    //this.scoretxt.text = "Score : " + this.score;
     this.time+=app.deltaTime;
+    globalTime = this.time
     this.objcnt=this.tapigroup.children.length;
     this.scoretxt.text = this.score;
+    if(this.time<=30000){
     this.timetxt.text=30-Math.floor(this.time/1000);
+    }else{
+      this.timetxt.text=0;
+    }
     this.objcnttxt.text = this.objcnt + "個";
 
     //時間の四角表示。だんだん短くなる
-    this.timerect.height=HEIGHT - ((this.time/30000) * HEIGHT);
-    this.timerect.width =WIDTH  - ((this.time/30000) * WIDTH);
-    this.timerect.fill = 'rgb({0}, {1}, {2})'.format(this.timerect.r, this.timerect.g, this.timerect.b);
-    this.headerTime.width=((this.time/30000) * WIDTH*2);
-    
-
-
+    if(this.time<=30000){
+      this.timerect.height=HEIGHT - ((this.time/30000) * HEIGHT)+1;
+      this.timerect.width =WIDTH  - ((this.time/30000) * WIDTH)+1;
+      this.headerTime.width=((this.time/30000) * WIDTH*2)+1;
+    }
+      
 
     //終了条件
     if(this.time>=30000){
-      this.time=0;
-      this.exit();
+      this.finishtxt = Label({
+        text: 'Finish',
+        fontSize: 96,
+        fill: 'black',
+        x: this.gridX.center(),
+        y: this.gridY.center(),
+      }).addChildTo(this);
     }
   },
 
@@ -252,9 +253,12 @@ phina.define("Mouse", {
   },
 
   update: function (app) {
-    var p = app.pointer;
-    this.x = p.x;
-    this.y = p.y;
+    //制限時間をすぎたら、動かなくなる
+    if(globalTime<=30000){
+      var p = app.pointer;
+      this.x = p.x;
+      this.y = p.y;
+    }
   },
 });
 
@@ -359,9 +363,11 @@ phina.define("Tapioka", {
       this.tapivec.y = Math.floor(this.tapivec.y/tapivecScalar)-minmove;
     }
     //console.log(this.tapivec.x, this.tapivec.y);
-    //移動の為の足し算
-    this.x+=this.tapivec.x*this.speed;
-    this.y+=this.tapivec.y*this.speed;
+    //移動の為の足し算。時間を過ぎたら、動かなくなる
+    if(globalTime<=30000){
+      this.x+=this.tapivec.x*this.speed;
+      this.y+=this.tapivec.y*this.speed;
+    }
     /*
     //八方向にしか追尾しないバージョン
     var p = app.pointer;
