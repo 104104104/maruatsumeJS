@@ -129,8 +129,8 @@ phina.define("MainScene", {
     }
     
     //レベルの値
-      this.nekoTapiRevel = Math.floor(this.objcnt/30)+1;
-      console.log(this.nekoTapiRevel);
+      this.nekoTapiRevel = Math.floor(this.objcnt/100)+1;
+      //console.log(this.nekoTapiRevel);
     
     //一定間隔でタピオカ追加
     //画面内部の猫とタピオカの数に応じて、追加の割合が上がる(同時に複数個投入される)
@@ -208,8 +208,32 @@ phina.define("Tapioka", {
       this.x = WIDTH;
       this.y = Math.round(Math.random() * HEIGHT);
     }
-    this.width = 64;
-    this.height = 64;
+
+    //sizeで、大きさと動く早さが決まる
+    //randsizeで大きさを決める
+    var randsize=Math.round(Math.random() * 100);
+    console.log(randsize);
+    if(randsize<=30){
+      this.size=0;
+      //大きさは、画面サイズとの比率で決まる
+      this.width = Math.floor(WIDTH/30);
+      this.height = Math.floor(WIDTH/30);
+      this.speed=Math.floor(WIDTH/300);
+    }else if(31<= randsize && randsize<=99){
+      this.size=1;
+      //大きさは、画面サイズとの比率で決まる
+      this.width = Math.floor(WIDTH/15);
+      this.height = Math.floor(WIDTH/15);
+      this.speed=Math.floor(WIDTH/600);
+    }else{
+      this.size=2;
+      //大きさは、画面サイズとの比率で決まる
+      this.width = Math.floor(WIDTH/5);
+      this.height = Math.floor(WIDTH/5);
+      this.speed=Math.floor(WIDTH/900);
+    }
+    console.log(this.width, this.height);
+
     //rotateで回転方向を決める
     this.rotate = Math.round(Math.random() * 2);
     //移動の為のベクトル
@@ -227,7 +251,7 @@ phina.define("Tapioka", {
     this.tapivec.x = app.pointer.x-this.x;
     this.tapivec.y = app.pointer.y-this.y;
     //console.log(this.tapivec.x, this.tapivec.y);
-    //ベクトルの正規化(大きさ3で正規化)
+    //ベクトルの正規化(動きの滑らかさのため、大きさ3で正規化)
     var tapivecScalar=Math.sqrt(this.tapivec.x*this.tapivec.x + this.tapivec.y*this.tapivec.y)/3;
     //console.log(tapivecScalar);
     //console.log(this.tapivec.x/tapivecScalar);
@@ -245,8 +269,9 @@ phina.define("Tapioka", {
       this.tapivec.y = Math.floor(this.tapivec.y/tapivecScalar);
     }
     //console.log(this.tapivec.x, this.tapivec.y);
-    this.x+=this.tapivec.x;
-    this.y+=this.tapivec.y;
+    //移動の為の足し算
+    this.x+=this.tapivec.x*this.speed;
+    this.y+=this.tapivec.y*this.speed;
     /*
     //八方向にしか追尾しないバージョン
     var p = app.pointer;
