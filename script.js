@@ -71,6 +71,8 @@ phina.define("MainScene", {
     this.superInit(options);
 
     //時間を表す背景の四角
+    //紛らわしいという意見があったので、いったん消す
+    /*
     this.timerect = RectangleShape({
       width: WIDTH,
       height: HEIGHT,
@@ -79,6 +81,7 @@ phina.define("MainScene", {
       blendMode: 'lighter',
     }).addChildTo(this);
     this.timerect.setPosition(this.gridX.center(), this.gridY.center());
+    */
 
     this.mouse = Mouse().addChildTo(this);
     this.tapigroup = DisplayElement().addChildTo(this);
@@ -119,13 +122,6 @@ phina.define("MainScene", {
       fill: 'white',
       x: this.gridX.span(12) + 30,
       y: this.gridY.span(0) + 30,
-    }).addChildTo(this);
-    this.txt4 = Label({
-      text: 'TIME',
-      fontSize: 32,
-      fill: 'white',
-      x: this.gridX.span(1),
-      y: this.gridY.span(15),
     }).addChildTo(this);
 
     //スコアなど表示
@@ -204,17 +200,18 @@ phina.define("MainScene", {
     //一定間隔でタピオカ追加
     //画面内部の猫とタピオカの数に応じて、追加の割合が上がる(同時に複数個投入される)
     //時間を過ぎたら、追加しない
-    //最大値は1000
+    //最大値は1300(理論上の最大値は1238のはず)
+    var maxTapiCount=1300;
     if (app.frame % 15 == 0 && this.time <= 30000 && this.objcnt <= 30) {
       for (var i = 0; i < this.nekoTapiRevel; i++) {
-        if (this.tapigroup.children.length <= 1000) {
+        if (this.tapigroup.children.length <= maxTapiCount) {
           Tapioka().addChildTo(this.tapigroup);
         }
       }
     }
     if (app.frame % 3 == 0 && this.time <= 30000 && this.objcnt >= 31) {
       for (var i = 0; i < this.nekoTapiRevel; i++) {
-        if (this.tapigroup.children.length <= 1000) {
+        if (this.tapigroup.children.length <= maxTapiCount) {
           Tapioka().addChildTo(this.tapigroup);
         }
       }
@@ -233,11 +230,18 @@ phina.define("MainScene", {
     this.objcnttxt.text = this.objcnt + "個";
 
     //時間の四角表示。だんだん短くなる
+    //紛らわしいという意見があったので、いったん消す
+    /*
     if (this.time <= 30000) {
       this.timerect.height = HEIGHT - ((this.time / 30000) * HEIGHT) + 1;
       this.timerect.width = WIDTH - ((this.time / 30000) * WIDTH) + 1;
       this.headerTime.width = ((this.time / 30000) * WIDTH * 2) + 1;
     }
+    */
+   //ヘッダは残す
+   if (this.time <= 30000) {
+    this.headerTime.width = ((this.time / 30000) * WIDTH * 2) + 1;
+  }
 
 
     //終了条件
