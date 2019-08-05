@@ -9,37 +9,16 @@ var ASSETS = {
     'tapioka2': './tapioka2.png',
   },
 };
-var TAPIOKA_MAX_NUM = 100;
 var MOUSE_CIRCLE_RADIUS = 16;
 //画面サイズ
 var WIDTH = 918;
 var HEIGHT = 1378;
 var globalTime = 0;
+var TIME=1000;
 
-//シーンマネージャー
-phina.define('MyManagerScene', {
-  superClass: 'ManagerScene',
-  init: function () {
-    this.superInit({
-      scenes: [
-        // タイトル
-        {
-          label: 'マイタイトル',
-          className: 'MyTitleScene',
-          nextLabel: 'メインシーン'
-        },
-        {
-          label: 'メインシーン',
-          className: 'MainScene',
-          nextLabel: 'マイタイトル'
-        }
-      ]
-    });
-  }
-});
 
 //タイトルシーン
-phina.define('MyTitleScene', {
+phina.define('TitleScene', {
   superClass: 'DisplayScene',
 
   init: function (options) {
@@ -52,11 +31,21 @@ phina.define('MyTitleScene', {
     var label = Label('猫とタピオカ').addChildTo(this);
     label.x = this.gridX.center();
     label.y = this.gridY.center();
-  },
-  onclick: function () {
-    //次のシーンへ移動
-    this.exit();
+
+    var sprite = Sprite('tapioka0').addChildTo(this);
+    // 初期位置
+    sprite.x = this.gridX.center();
+    sprite.y = this.gridY.center();
+    // タッチを有効にする
+    sprite.setInteractive(true);
+    // タッチイベント登録
+    scene=this; //circleの関数の中からのthisは、circleのことになる。そこで、いったん代入
+    sprite.onclick = function() {
+      // 画面遷移
+      scene.exit();
+    };
   }
+
 });
 
 //メインシーン
@@ -157,6 +146,21 @@ phina.define("MainScene", {
     this.nekoTapiRevelLast = 1;
     this.nekoTapiRevelFlug1 = 0;
     this.nekoTapiRevelFlug2 = 0;
+
+    //ゲーム終了のボタン。最初は非表示
+    buttom = Sprite('tapioka2').addChildTo(this);
+      // 初期位置
+      buttom.x = 0;
+      buttom.y = 0;
+      // タッチを有効にする
+      buttom.setInteractive(true);
+      // タッチイベント登録
+      scene=this; //buttomの関数の中からのthisは、buttomのことになる。そこで、いったん代入
+      buttom.onclick = function() {
+        // 画面遷移
+        scene.exit();
+      }
+      buttom.hide();
   },
 
 
@@ -202,14 +206,14 @@ phina.define("MainScene", {
     //時間を過ぎたら、追加しない
     //最大値は1300(理論上の最大値は1238のはず)
     var maxTapiCount=1300;
-    if (app.frame % 15 == 0 && this.time <= 30000 && this.objcnt <= 30) {
+    if (app.frame % 15 == 0 && this.time <= TIME && this.objcnt <= 30) {
       for (var i = 0; i < this.nekoTapiRevel; i++) {
         if (this.tapigroup.children.length <= maxTapiCount) {
           Tapioka().addChildTo(this.tapigroup);
         }
       }
     }
-    if (app.frame % 3 == 0 && this.time <= 30000 && this.objcnt >= 31) {
+    if (app.frame % 3 == 0 && this.time <= TIME && this.objcnt >= 31) {
       for (var i = 0; i < this.nekoTapiRevel; i++) {
         if (this.tapigroup.children.length <= maxTapiCount) {
           Tapioka().addChildTo(this.tapigroup);
@@ -222,7 +226,7 @@ phina.define("MainScene", {
     globalTime = this.time
     this.objcnt = this.tapigroup.children.length;
     this.scoretxt.text = this.score;
-    if (this.time <= 30000) {
+    if (this.time <= TIME) {
       this.timetxt.text = 30 - Math.floor(this.time / 1000);
     } else {
       this.timetxt.text = 0;
@@ -232,20 +236,20 @@ phina.define("MainScene", {
     //時間の四角表示。だんだん短くなる
     //紛らわしいという意見があったので、いったん消す
     /*
-    if (this.time <= 30000) {
-      this.timerect.height = HEIGHT - ((this.time / 30000) * HEIGHT) + 1;
-      this.timerect.width = WIDTH - ((this.time / 30000) * WIDTH) + 1;
-      this.headerTime.width = ((this.time / 30000) * WIDTH * 2) + 1;
+    if (this.time <= TIME) {
+      this.timerect.height = HEIGHT - ((this.time / TIME) * HEIGHT) + 1;
+      this.timerect.width = WIDTH - ((this.time / TIME) * WIDTH) + 1;
+      this.headerTime.width = ((this.time / TIME) * WIDTH * 2) + 1;
     }
     */
    //ヘッダは残す
-   if (this.time <= 30000) {
-    this.headerTime.width = ((this.time / 30000) * WIDTH * 2) + 1;
+   if (this.time <= TIME) {
+    this.headerTime.width = ((this.time / TIME) * WIDTH * 2) + 1;
   }
 
 
     //終了条件
-    if (this.time >= 30000) {
+    if (this.time >= TIME) {
       this.finishrec = RectangleShape({
         x: this.gridX.center(),
         y: this.gridY.span(5),
@@ -262,23 +266,8 @@ phina.define("MainScene", {
         y: this.gridY.span(5),
       }).addChildTo(this);
 
-      /*
-      var button = Button({
-        x: 320,             // x座標
-        y: 480,             // y座標
-        width: 150,         // 横サイズ
-        height: 100,        // 縦サイズ
-        text: "Title",     // 表示文字
-        fontSize: 32,       // 文字サイズ
-        fontColor: 'white', // 文字色
-        cornerRadius: 10,   // 角丸み
-        fill: 'skyblue',    // ボタン色
-        stroke: null,     // 枠太さ
-      }).addChildTo(this);
-      button.onclick = function(){
-        this.exit();
-      };
-      */
+      //タイトルへ行くボタンの表示
+      buttom.show();
     }
   },
 
@@ -300,7 +289,7 @@ phina.define("Mouse", {
 
   update: function (app) {
     //制限時間をすぎたら、動かなくなる
-    if (globalTime <= 30000) {
+    if (globalTime <= TIME) {
       var p = app.pointer;
       this.x = p.x;
       this.y = p.y;
@@ -410,7 +399,7 @@ phina.define("Tapioka", {
     }
     //console.log(this.tapivec.x, this.tapivec.y);
     //移動の為の足し算。時間を過ぎたら、動かなくなる
-    if (globalTime <= 30000) {
+    if (globalTime <= TIME) {
       this.x += this.tapivec.x * this.speed;
       this.y += this.tapivec.y * this.speed;
     }
@@ -430,6 +419,29 @@ phina.define("Tapioka", {
   },
 });
 
+//マウスの定義
+phina.define("picButtom", {
+  superClass: 'Sprite',
+
+  init: function (options) {
+    options = ({
+      fill: "red",
+      stroke: null,
+      radius: MOUSE_CIRCLE_RADIUS,
+    });
+    this.superInit(options);
+  },
+
+  update: function (app) {
+    //制限時間をすぎたら、動かなくなる
+    if (globalTime <= TIME) {
+      var p = app.pointer;
+      this.x = p.x;
+      this.y = p.y;
+    }
+  },
+});
+
 //メイン処理
 phina.main(function () {
   var app = GameApp({
@@ -437,8 +449,21 @@ phina.main(function () {
     width: WIDTH,
     height: HEIGHT,
     fps: 30,
+    //Titleから開始
+    startLabel: 'Title',
+    scenes: [
+      // タイトル
+      {
+        label: 'Title',
+        className: 'TitleScene',
+        nextLabel: 'Main'
+      },
+      {
+        label: 'Main',
+        className: 'MainScene',
+        nextLabel: 'Title'
+      }
+    ]
   });
-  //ManegerSceneを使う設定
-  app.replaceScene(MyManagerScene());
   app.run();
 });
