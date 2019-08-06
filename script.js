@@ -13,7 +13,8 @@ var TAPIOKA_MAX_NUM = 100;
 var MOUSE_CIRCLE_RADIUS = 16;
 //画面サイズ
 var WIDTH = 918;
-var HEIGHT = 1378;
+//var HEIGHT = 1378;
+var HEIGHT=1500;
 var globalTime = 0;
 var TIME=30000;
 
@@ -106,21 +107,21 @@ phina.define("MainScene", {
       fontSize: 48,
       fill: 'white',
       x: this.gridX.span(3),
-      y: this.gridY.span(0) + 30,
+      y: this.gridY.span(0) + 40,
     }).addChildTo(this);
     this.txt2 = Label({
       text: 'Time',
       fontSize: 48,
       fill: 'white',
       x: this.gridX.center(),
-      y: this.gridY.span(0) + 30,
+      y: this.gridY.span(0) + 40,
     }).addChildTo(this);
     this.txt3 = Label({
       text: 'cat&tapioka',
       fontSize: 48,
       fill: 'white',
       x: this.gridX.span(12) + 30,
-      y: this.gridY.span(0) + 30,
+      y: this.gridY.span(0) + 40,
     }).addChildTo(this);
 
     //スコアなど表示
@@ -133,7 +134,7 @@ phina.define("MainScene", {
       fontSize: 48,
       fill: 'white',
       x: this.gridX.span(3),
-      y: this.gridY.span(1) + 20,
+      y: this.gridY.span(1) + 30,
     }).addChildTo(this);
 
     this.timetxt = Label({
@@ -141,7 +142,7 @@ phina.define("MainScene", {
       fontSize: 48,
       fill: 'white',
       x: this.gridX.center(),
-      y: this.gridY.span(1) + 20,
+      y: this.gridY.span(1) + 30,
     }).addChildTo(this);
 
     this.objcnttxt = Label({
@@ -149,7 +150,7 @@ phina.define("MainScene", {
       fontSize: 48,
       fill: 'white',
       x: this.gridX.span(12) + 30,
-      y: this.gridY.span(1) + 20,
+      y: this.gridY.span(1) + 30,
     }).addChildTo(this);
 
     this.nekoTapiRevel = 1;
@@ -430,7 +431,7 @@ phina.main(function () {
     width: WIDTH,
     height: HEIGHT,
     fps: 30,
-    //query: '#mycanvas',//使うキャンバス指定
+    query: '#mycanvas',//使うキャンバス指定
   });
   //ManegerSceneを使う設定
   app.replaceScene(MyManagerScene());
