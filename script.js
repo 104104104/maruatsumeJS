@@ -15,6 +15,7 @@ var MOUSE_CIRCLE_RADIUS = 16;
 var WIDTH = 918;
 var HEIGHT = 1378;
 var globalTime = 0;
+var TIME=30000;
 
 //シーンマネージャー
 phina.define('MyManagerScene', {
@@ -202,14 +203,14 @@ phina.define("MainScene", {
     //時間を過ぎたら、追加しない
     //最大値は1300(理論上の最大値は1238のはず)
     var maxTapiCount=1300;
-    if (app.frame % 15 == 0 && this.time <= 30000 && this.objcnt <= 30) {
+    if (app.frame % 15 == 0 && this.time <= TIME && this.objcnt <= 30) {
       for (var i = 0; i < this.nekoTapiRevel; i++) {
         if (this.tapigroup.children.length <= maxTapiCount) {
           Tapioka().addChildTo(this.tapigroup);
         }
       }
     }
-    if (app.frame % 3 == 0 && this.time <= 30000 && this.objcnt >= 31) {
+    if (app.frame % 3 == 0 && this.time <= TIME && this.objcnt >= 31) {
       for (var i = 0; i < this.nekoTapiRevel; i++) {
         if (this.tapigroup.children.length <= maxTapiCount) {
           Tapioka().addChildTo(this.tapigroup);
@@ -222,7 +223,7 @@ phina.define("MainScene", {
     globalTime = this.time
     this.objcnt = this.tapigroup.children.length;
     this.scoretxt.text = this.score;
-    if (this.time <= 30000) {
+    if (this.time <= TIME) {
       this.timetxt.text = 30 - Math.floor(this.time / 1000);
     } else {
       this.timetxt.text = 0;
@@ -232,20 +233,20 @@ phina.define("MainScene", {
     //時間の四角表示。だんだん短くなる
     //紛らわしいという意見があったので、いったん消す
     /*
-    if (this.time <= 30000) {
-      this.timerect.height = HEIGHT - ((this.time / 30000) * HEIGHT) + 1;
-      this.timerect.width = WIDTH - ((this.time / 30000) * WIDTH) + 1;
-      this.headerTime.width = ((this.time / 30000) * WIDTH * 2) + 1;
+    if (this.time <= TIME) {
+      this.timerect.height = HEIGHT - ((this.time / TIME) * HEIGHT) + 1;
+      this.timerect.width = WIDTH - ((this.time / TIME) * WIDTH) + 1;
+      this.headerTime.width = ((this.time / TIME) * WIDTH * 2) + 1;
     }
     */
    //ヘッダは残す
-   if (this.time <= 30000) {
-    this.headerTime.width = ((this.time / 30000) * WIDTH * 2) + 1;
+   if (this.time <= TIME) {
+    this.headerTime.width = ((this.time / TIME) * WIDTH * 2) + 1;
   }
 
 
     //終了条件
-    if (this.time >= 30000) {
+    if (this.time >= TIME) {
       this.finishrec = RectangleShape({
         x: this.gridX.center(),
         y: this.gridY.span(5),
@@ -300,7 +301,7 @@ phina.define("Mouse", {
 
   update: function (app) {
     //制限時間をすぎたら、動かなくなる
-    if (globalTime <= 30000) {
+    if (globalTime <= TIME) {
       var p = app.pointer;
       this.x = p.x;
       this.y = p.y;
@@ -410,7 +411,7 @@ phina.define("Tapioka", {
     }
     //console.log(this.tapivec.x, this.tapivec.y);
     //移動の為の足し算。時間を過ぎたら、動かなくなる
-    if (globalTime <= 30000) {
+    if (globalTime <= TIME) {
       this.x += this.tapivec.x * this.speed;
       this.y += this.tapivec.y * this.speed;
     }
