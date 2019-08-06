@@ -15,7 +15,7 @@ var MOUSE_CIRCLE_RADIUS = 16;
 var WIDTH = 918;
 var HEIGHT = 1378;
 var globalTime = 0;
-var TIME=30000;
+var TIME = 30000;
 
 //シーンマネージャー
 phina.define('MyManagerScene', {
@@ -83,6 +83,93 @@ phina.define("MainScene", {
     }).addChildTo(this);
     this.timerect.setPosition(this.gridX.center(), this.gridY.center());
     */
+    //時間を表す文字
+    this.thirty = Label({
+      text: '30',
+      fontSize: 100,
+      fill: 'green',
+      x: this.gridX.center(),
+      y: this.gridY.center(),
+    }).addChildTo(this);
+    // 透明度を指定
+    this.thirty.tweener.fade(0, 3000).play();
+
+    this.twenty = Label({
+      text: '20',
+      fontSize: 150,
+      fill: 'yellow',
+      x: this.gridX.center(),
+      y: this.gridY.center(),
+    }).addChildTo(this);
+    // 透明度を指定
+    this.twenty.tweener.wait(10000).fade(0, 3000).play();
+    this.twenty.hide();//残り20秒を過ぎたら表示
+
+    this.ten = Label({
+      text: '10',
+      fontSize: 250,
+      fill: 'orange',
+      x: this.gridX.center(),
+      y: this.gridY.center(),
+    }).addChildTo(this);
+    // 透明度を指定
+    this.ten.tweener.wait(20000).fade(0, 3000).play();
+    this.ten.hide();//残り10秒を過ぎたら表示
+
+    this.five = Label({
+      text: '5',
+      fontSize: 500,
+      fill: 'red',
+      x: this.gridX.center(),
+      y: this.gridY.center(),
+    }).addChildTo(this);
+    // 透明度を指定
+    this.five.tweener.wait(25000).fade(0, 1000).play();
+    this.five.hide();
+
+    this.four = Label({
+      text: '4',
+      fontSize: 500,
+      fill: 'red',
+      x: this.gridX.center(),
+      y: this.gridY.center(),
+    }).addChildTo(this);
+    // 透明度を指定
+    this.four.tweener.wait(26000).fade(0, 1000).play();
+    this.four.hide();
+
+    this.three = Label({
+      text: '3',
+      fontSize: 500,
+      fill: 'red',
+      x: this.gridX.center(),
+      y: this.gridY.center(),
+    }).addChildTo(this);
+    // 透明度を指定
+    this.three.tweener.wait(27000).fade(0, 1000).play();
+    this.three.hide();
+
+    this.two = Label({
+      text: '2',
+      fontSize: 500,
+      fill: 'red',
+      x: this.gridX.center(),
+      y: this.gridY.center(),
+    }).addChildTo(this);
+    // 透明度を指定
+    this.two.tweener.wait(28000).fade(0, 1000).play();
+    this.two.hide();
+
+    this.one = Label({
+      text: '1',
+      fontSize: 500,
+      fill: 'red',
+      x: this.gridX.center(),
+      y: this.gridY.center(),
+    }).addChildTo(this);
+    // 透明度を指定
+    this.one.tweener.wait(29000).fade(0, 1000).play();
+    this.one.hide();
 
     this.mouse = Mouse().addChildTo(this);
     this.tapigroup = DisplayElement().addChildTo(this);
@@ -202,7 +289,7 @@ phina.define("MainScene", {
     //画面内部の猫とタピオカの数に応じて、追加の割合が上がる(同時に複数個投入される)
     //時間を過ぎたら、追加しない
     //最大値は1300(理論上の最大値は1238のはず)
-    var maxTapiCount=1300;
+    var maxTapiCount = 1300;
     if (app.frame % 15 == 0 && this.time <= TIME && this.objcnt <= 30) {
       for (var i = 0; i < this.nekoTapiRevel; i++) {
         if (this.tapigroup.children.length <= maxTapiCount) {
@@ -239,10 +326,31 @@ phina.define("MainScene", {
       this.headerTime.width = ((this.time / TIME) * WIDTH * 2) + 1;
     }
     */
-   //ヘッダは残す
-   if (this.time <= TIME) {
-    this.headerTime.width = ((this.time / TIME) * WIDTH * 2) + 1;
-  }
+    if (this.time >= 10000) {
+      this.twenty.show();
+    }
+    if (this.time >= 20000) {
+      this.ten.show();
+    }
+    if (this.time >= 25000) {
+      this.five.show();
+    }
+    if (this.time >= 26000) {
+      this.four.show();
+    }
+    if (this.time >= 27000) {
+      this.three.show();
+    }
+    if (this.time >= 28000) {
+      this.two.show();
+    }
+    if (this.time >= 29000) {
+      this.one.show();
+    }
+    //ヘッダは残す
+    if (this.time <= TIME) {
+      this.headerTime.width = ((this.time / TIME) * WIDTH * 2) + 1;
+    }
 
 
     //終了条件
