@@ -13,8 +13,7 @@ var TAPIOKA_MAX_NUM = 100;
 var MOUSE_CIRCLE_RADIUS = 16;
 //画面サイズ
 var WIDTH = 918;
-//var HEIGHT = 1378;
-var HEIGHT=1500;
+var HEIGHT = 1378;
 var globalTime = 0;
 var TIME=30000;
 
