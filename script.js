@@ -17,28 +17,6 @@ var HEIGHT = 1378;
 var globalTime = 0;
 var TIME=30000;
 
-//シーンマネージャー
-phina.define('MyManagerScene', {
-  superClass: 'ManagerScene',
-  init: function () {
-    this.superInit({
-      scenes: [
-        // タイトル
-        {
-          label: 'マイタイトル',
-          className: 'MyTitleScene',
-          nextLabel: 'メインシーン'
-        },
-        {
-          label: 'メインシーン',
-          className: 'MainScene',
-          nextLabel: 'マイタイトル'
-        }
-      ]
-    });
-  }
-});
-
 //タイトルシーン
 phina.define('MyTitleScene', {
   superClass: 'DisplayScene',
@@ -431,8 +409,20 @@ phina.main(function () {
     height: HEIGHT,
     fps: 30,
     query: '#mycanvas',//使うキャンバス指定
+    startLavel: 'title',//titleから始めないといけないみたい
+    scenes: [
+      // タイトル
+      {
+        label: 'title',
+        className: 'MyTitleScene',
+        nextLabel: 'Main'
+      },
+      {
+        label: 'Main',
+        className: 'MainScene',
+        nextLabel: 'MyTitle'
+      }
+    ]
   });
-  //ManegerSceneを使う設定
-  app.replaceScene(MyManagerScene());
   app.run();
 });
