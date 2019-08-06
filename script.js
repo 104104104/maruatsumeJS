@@ -139,6 +139,21 @@ phina.define("MainScene", {
     this.nekoTapiRevelLast = 1;
     this.nekoTapiRevelFlug1 = 0;
     this.nekoTapiRevelFlug2 = 0;
+
+    //ゲーム終了のボタン。最初は非表示
+    this.buttom = Sprite('tapioka2').addChildTo(this);
+      // 初期位置
+      this.buttom.x = this.gridX.center();
+      this.buttom.y = this.gridY.center();
+      // タッチを有効にする
+      this.buttom.setInteractive(true);
+      // タッチイベント登録
+      scene=this; //buttomの関数の中からのthisは、buttomのことになる。そこで、いったん代入
+      this.buttom.onclick = function() {
+        // 画面遷移
+        scene.exit();
+      }
+      this.buttom.hide();
   },
 
 
@@ -240,6 +255,8 @@ phina.define("MainScene", {
         x: this.gridX.center(),
         y: this.gridY.span(5),
       }).addChildTo(this);
+         //タイトルへ行くボタンの表示
+      this.buttom.show();
 
       /*
       var button = Button({
@@ -425,7 +442,7 @@ phina.main(function () {
       {
         label: 'Main',
         className: 'MainScene',
-        nextLabel: 'MyTitle'
+        nextLabel: 'title'
       }
     ]
   });
