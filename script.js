@@ -12,8 +12,8 @@ var ASSETS = {
 var TAPIOKA_MAX_NUM = 100;
 var MOUSE_CIRCLE_RADIUS = 16;
 //画面サイズ
-var WIDTH = 918;
-var HEIGHT = 1378;
+var WIDTH = 640;
+var HEIGHT = 960;
 var globalTime = 0;
 var TIME=30000;
 
@@ -72,17 +72,15 @@ phina.define("MainScene", {
     this.superInit(options);
 
     //時間を表す背景の四角
-    //紛らわしいという意見があったので、いったん消す
-    /*
-    this.timerect = RectangleShape({
+    this.timerect = CircleShape({
+      radius: Math.floor(WIDTH/2),
       width: WIDTH,
       height: HEIGHT,
-      fill: 'gray',
+      fill: 'skyblue',
       stroke: null,
       blendMode: 'lighter',
     }).addChildTo(this);
     this.timerect.setPosition(this.gridX.center(), this.gridY.center());
-    */
 
     this.mouse = Mouse().addChildTo(this);
     this.tapigroup = DisplayElement().addChildTo(this);
@@ -231,15 +229,12 @@ phina.define("MainScene", {
     this.objcnttxt.text = this.objcnt + "個";
 
     //時間の四角表示。だんだん短くなる
-    //紛らわしいという意見があったので、いったん消す
-    /*
     if (this.time <= TIME) {
-      this.timerect.height = HEIGHT - ((this.time / TIME) * HEIGHT) + 1;
-      this.timerect.width = WIDTH - ((this.time / TIME) * WIDTH) + 1;
-      this.headerTime.width = ((this.time / TIME) * WIDTH * 2) + 1;
+      this.timerect.height = HEIGHT-((this.time / TIME) * HEIGHT) + 1;
+      this.timerect.width = WIDTH-((this.time / TIME) * WIDTH) + 1;
+      this.timerect.radius = WIDTH/2-((this.time / TIME) * WIDTH/2) + 1;
     }
-    */
-   //ヘッダは残す
+    //ヘッダの時間表示
    if (this.time <= TIME) {
     this.headerTime.width = ((this.time / TIME) * WIDTH * 2) + 1;
   }
@@ -391,8 +386,6 @@ phina.define("Tapioka", {
     //console.log(this.tapivec.x, this.tapivec.y);
     //ベクトルの正規化(動きの滑らかさのため、大きさ2で正規化)
     var tapivecScalar = Math.sqrt(this.tapivec.x * this.tapivec.x + this.tapivec.y * this.tapivec.y) / 2;
-    //console.log(tapivecScalar);
-    //console.log(this.tapivec.x/tapivecScalar);
 
     //最低でもちょっとは動かないと、後半戦が面白くないので、その為の値
     var minmove = 1;
@@ -409,7 +402,6 @@ phina.define("Tapioka", {
     } else {
       this.tapivec.y = Math.floor(this.tapivec.y / tapivecScalar) - minmove;
     }
-    //console.log(this.tapivec.x, this.tapivec.y);
     //移動の為の足し算。時間を過ぎたら、動かなくなる
     if (globalTime <= TIME) {
       this.x += this.tapivec.x * this.speed;
