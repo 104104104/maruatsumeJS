@@ -430,6 +430,7 @@ phina.main(function () {
     width: WIDTH,
     height: HEIGHT,
     fps: 30,
+    //query: '#mycanvas',//使うキャンバス指定
   });
   //ManegerSceneを使う設定
   app.replaceScene(MyManagerScene());
