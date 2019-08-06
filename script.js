@@ -7,6 +7,7 @@ var ASSETS = {
     'tapioka0': './tapioka0.png',
     'tapioka1': './tapioka1.png',
     'tapioka2': './tapioka2.png',
+    'title': './title.png'
   },
 };
 var TAPIOKA_MAX_NUM = 100;
@@ -28,9 +29,13 @@ phina.define('MyTitleScene', {
     });
     this.superInit(options);
 
-    var label = Label('猫とタピオカ').addChildTo(this);
-    label.x = this.gridX.center();
-    label.y = this.gridY.center();
+    this.titlePic = Sprite('title').addChildTo(this);
+    this.titlePic.x = this.gridX.center();
+    this.titlePic.y = this.gridY.center();
+  },
+  update: function(){
+    this.titlePic.x = this.gridX.center();
+    this.titlePic.y = this.gridY.center();
   },
   onclick: function () {
     //次のシーンへ移動
@@ -50,7 +55,7 @@ phina.define("MainScene", {
     this.superInit(options);
 
     //時間を表す背景の四角
-    this.timerect = CircleShape({
+    this.timerect = RectangleShape({
       radius: Math.floor(WIDTH/2),
       width: WIDTH,
       height: HEIGHT,
