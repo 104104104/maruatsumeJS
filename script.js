@@ -238,7 +238,7 @@ phina.define("MainScene", {
     if (this.time >= TIME + 1000) {
       this.finishrec2 = RectangleShape({
         x: this.gridX.center(),
-        y: this.gridY.span(8)-30,
+        y: this.gridY.span(8) - 30,
         width: WIDTH / 2,
         height: 200,
         fill: 'white',
@@ -251,9 +251,9 @@ phina.define("MainScene", {
       resultScoreTxt.y = this.gridY.span(7);
       resultScoreTxt.fontSize = 48;
       resultScoreTxt.fill = 'black';
-      
+
       //スコア表示
-      var resultScoreTxt = Label(this.objcnt+'個').addChildTo(this.resultgroup);
+      var resultScoreTxt = Label(this.objcnt + '個').addChildTo(this.resultgroup);
       // 初期位置
       resultScoreTxt.x = this.gridX.center();
       resultScoreTxt.y = this.gridY.span(8);
@@ -276,15 +276,16 @@ phina.define("MainScene", {
       scene = this; //buttomの関数の中からのthisは、buttomのことになる。そこで、いったん代入
       this.finishrec3.onclick = function () {
         // 画面遷移
+        this.time=0;//念の為戻す
         scene.exit();
       }
 
-      //タイトルに戻るボタン
+      //タイトルに戻るボタンの文字
       var buttom = Label('Back To Title').addChildTo(this.resultgroup);
       // 初期位置
       buttom.x = this.gridX.center();
       buttom.y = this.gridY.span(13);
-      buttom.fontSize=48;
+      buttom.fontSize = 48;
     }
   },
 
