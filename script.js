@@ -7,7 +7,8 @@ var ASSETS = {
     'tapioka0': './tapioka0.png',
     'tapioka1': './tapioka1.png',
     'tapioka2': './tapioka2.png',
-    'title': './title.jpg'
+    'title': './title.jpg',
+    'finish': './finishbutton.jpg',
   },
 };
 var TAPIOKA_MAX_NUM = 100;
@@ -16,7 +17,7 @@ var MOUSE_CIRCLE_RADIUS = 16;
 var WIDTH = 918;
 var HEIGHT = 1378;
 var globalTime = 0;
-var TIME = 30000;
+var TIME = 1000;
 
 //タイトルシーン
 phina.define('MyTitleScene', {
@@ -217,21 +218,9 @@ phina.define("MainScene", {
 
     //終了条件
     if (this.time >= TIME) {
-      this.finishrec = RectangleShape({
-        x: this.gridX.center(),
-        y: this.gridY.span(5),
-        width: WIDTH / 2,
-        height: 120,
-        fill: 'white',
-        stroke: null,
-      }).addChildTo(this.resultgroup);
-      this.finishtxt = Label({
-        text: 'Finish',
-        fontSize: 96,
-        fill: 'black',
-        x: this.gridX.center(),
-        y: this.gridY.span(5),
-      }).addChildTo(this.resultgroup);
+      this.finishrec = Sprite('finish').addChildTo(this.resultgroup);
+      this.finishrec.x = this.gridX.center();
+      this.finishrec.y = this.gridY.span(5);
     }
 
     //タピオカの数を、リザルトに表示
