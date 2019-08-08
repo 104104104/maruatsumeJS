@@ -8,8 +8,9 @@ var ASSETS = {
     'tapioka1': './tapioka1.png',
     'tapioka2': './tapioka2.png',
     'title': './title.jpg',
-    'finish': './finishbutton.jpg',
-    'nekotapi': './nekototapiocatxt.jpg',
+    'start': './startbutton.jpg',
+    'finish': './finishbutton.png',
+    'nekotapi': './nekototapiocatxt.png',
   },
 };
 var TAPIOKA_MAX_NUM = 100;
@@ -34,10 +35,20 @@ phina.define('MyTitleScene', {
     this.titlePic = Sprite('title').addChildTo(this);
     this.titlePic.x = this.gridX.center();
     this.titlePic.y = this.gridY.center();
-  },
-  update: function () {
-    this.titlePic.x = this.gridX.center();
-    this.titlePic.y = this.gridY.center();
+
+    this.startbutton = Sprite('start').addChildTo(this);
+    this.startbutton.x = this.gridX.center();
+    this.startbutton.y = this.gridY.center();
+    //ボタンにタッチイベントを仕込んで遷移させると、なぜか妙な挙動をする
+    //そこで、ボタンは見せかけで、どこを押しても始まるようにしてみた
+    // タッチを有効にする
+    //this.startbutton.setInteractive(true);
+    // タッチイベント登録
+    //scene = this; //buttomの関数の中からのthisは、buttomのことになる。そこで、いったん代入
+    //this.startbutton.onclick = function () {
+      // 画面遷移
+      //scene.exit();
+    //}
   },
   onclick: function () {
     //次のシーンへ移動
@@ -228,7 +239,7 @@ phina.define("MainScene", {
     if (this.time >= TIME + 1000) {
       this.finishrec2 = Sprite('nekotapi').addChildTo(this.resultgroup);
       this.finishrec2.x = this.gridX.center();
-      this.finishrec2.y = this.gridY.span(8);
+      this.finishrec2.y = this.gridY.span(8)-50;
 
       //スコア表示
       var resultScoreTxt = Label(this.objcnt + '個').addChildTo(this.resultgroup);
@@ -236,7 +247,7 @@ phina.define("MainScene", {
       resultScoreTxt.x = this.gridX.center();
       resultScoreTxt.y = this.gridY.span(9)-40;
       resultScoreTxt.fontSize = 96;
-      resultScoreTxt.fill = 'white';
+      resultScoreTxt.fill = 'black';
     }
 
     if (this.time >= TIME + 2000) {
