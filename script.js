@@ -9,6 +9,7 @@ var ASSETS = {
     'tapioka2': './tapioka2.png',
     'title': './title.jpg',
     'finish': './finishbutton.jpg',
+    'nekotapi': './nekototapiocatxt.jpg',
   },
 };
 var TAPIOKA_MAX_NUM = 100;
@@ -17,7 +18,7 @@ var MOUSE_CIRCLE_RADIUS = 16;
 var WIDTH = 918;
 var HEIGHT = 1378;
 var globalTime = 0;
-var TIME = 1000;
+var TIME = 30000;
 
 //タイトルシーン
 phina.define('MyTitleScene', {
@@ -225,29 +226,17 @@ phina.define("MainScene", {
 
     //タピオカの数を、リザルトに表示
     if (this.time >= TIME + 1000) {
-      this.finishrec2 = RectangleShape({
-        x: this.gridX.center(),
-        y: this.gridY.span(8) - 30,
-        width: WIDTH / 2,
-        height: 200,
-        fill: 'white',
-        stroke: null,
-      }).addChildTo(this.resultgroup);
-      //スコアのタイトル
-      var resultScoreTxt = Label('猫とタピオカ').addChildTo(this.resultgroup);
-      // 初期位置
-      resultScoreTxt.x = this.gridX.center();
-      resultScoreTxt.y = this.gridY.span(7);
-      resultScoreTxt.fontSize = 48;
-      resultScoreTxt.fill = 'black';
+      this.finishrec2 = Sprite('nekotapi').addChildTo(this.resultgroup);
+      this.finishrec2.x = this.gridX.center();
+      this.finishrec2.y = this.gridY.span(8);
 
       //スコア表示
       var resultScoreTxt = Label(this.objcnt + '個').addChildTo(this.resultgroup);
       // 初期位置
       resultScoreTxt.x = this.gridX.center();
-      resultScoreTxt.y = this.gridY.span(8);
+      resultScoreTxt.y = this.gridY.span(9)-40;
       resultScoreTxt.fontSize = 96;
-      resultScoreTxt.fill = 'black';
+      resultScoreTxt.fill = 'white';
     }
 
     if (this.time >= TIME + 2000) {
